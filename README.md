@@ -1,4 +1,6 @@
-# Scrollpatrol
+# Scrollsafe
+
+![Scrollsafe](public/brand/scrollsafe-wordmark.png)
 
 **A little less internet.** An open-source Chrome extension that mutes posts by meaning, with Jev.
 
@@ -8,14 +10,14 @@ Describe what you don't want to see: “engagement bait asking me to comment for
 
 1. Install Node.js 22+ and run `npm ci && npm run build`.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose `dist/`.
-3. Open Scrollpatrol from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules. **Save & test** makes a small Jev request and reports whether a valid response came back, with latency and the check time.
+3. Open Scrollsafe from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules. **Save & test** makes a small Jev request and reports whether a valid response came back, with latency and the check time.
 4. Open or reload a supported feed. The popup lets you pause filtering, disable individual sites, and adjust the match threshold.
 
 The source is free and MIT licensed. Jev is a hosted API, not an included local model; your API usage is billed by TypeSafe. This is an unpacked alpha, not a Chrome Web Store release.
 
 ## Preview
 
-![Scrollpatrol popup](popup-preview.png)
+![Scrollsafe popup](popup-preview.png)
 
 ## Connection checks and mute history
 
@@ -57,3 +59,7 @@ API contract: [TypeSafe API reference](https://docs.typesafe.ai/api).
 ## Before publishing
 
 Test authenticated feeds across supported layouts, evaluate false positives with real rules, add store icons/screenshots, and complete the Chrome Web Store privacy disclosure. No live Jev accuracy/cost benchmark has been run yet.
+
+## Brand assets
+
+Approved wordmark and square icon originals live in `public/brand/`. Chrome uses 16, 32, 48, and 128 pixel PNG versions in `public/icons/`. The repository remains `ennsharma/scrollpatrol`; the extension display name is Scrollsafe.

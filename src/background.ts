@@ -47,7 +47,7 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
     const {settings,apiKey}=await chrome.storage.local.get(['settings','apiKey']);
     const config=normalize(settings);
     if(!config.enabled||!config.sites[site]||!config.rules.length) return {muted:false};
-    if(typeof apiKey!=='string'||!apiKey) throw new Error('Add your Jev API key in Scrollpatrol.');
+    if(typeof apiKey!=='string'||!apiKey) throw new Error('Add your Jev API key in Scrollsafe.');
     const key=JSON.stringify([msg.text,config.rules,config.threshold]);
     if(cache.has(key)) return cache.get(key);
     if(Date.now()<backoffUntil) throw new Error('API paused after an error. Try again shortly.');
