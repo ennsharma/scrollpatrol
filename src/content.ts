@@ -1,5 +1,5 @@
 import {siteFor} from './core';
-import {posts,postText,related} from './adapters';
+import {posts,postText,related,postUrl} from './adapters';
 const site=siteFor(location.hostname)!;
 const seen=new WeakMap<HTMLElement,string>();
 const revealed=new WeakMap<HTMLElement,string>();
@@ -33,7 +33,10 @@ async function scan(){
     const result=await chrome.runtime.sendMessage({type:'classify',text});
     if(current!==generation){seen.delete(el);break;}
     if(result?.error){seen.delete(el);retryAt.set(el,Date.now()+60000);setTimeout(schedule,61000);}
-    if(result?.muted&&el.isConnected&&postText(el,site)===text)collapse(el,result.rule,text);
+    if(result?.muted&&el.isConnected&&postText(el,site)===text){
+      collapse(el,result.rule,text);
+      void chrome.runtime.sendMessage({type:'recordHidden',text,rule:result.rule,score:result.score,url:postUrl(el,site)}).catch(()=>{});
+    }
   }}catch{/* Navigations and extension reloads leave the feed visible. */}finally{busy=false;if(current!==generation)schedule();}
 }
 let timer:ReturnType<typeof setTimeout>;

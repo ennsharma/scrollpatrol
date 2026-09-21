@@ -21,16 +21,28 @@ try{
  // extension messaging, trusted storage, DOM changes, and popup controls.
  await worker.evaluate(()=>{globalThis.fetch=async()=>new Response(JSON.stringify({answers:{r0:{type:'noul',noul:.99}}}),{status:200});});
  await popup.locator('#key').fill('test-only-not-a-real-key');
- await popup.getByRole('button',{name:'Save key',exact:true}).click();
+ await popup.getByRole('button',{name:'Save & test',exact:true}).click();
+ await popup.getByText(/Connection verified/).waitFor();
  const page=await ctx.newPage();
- await page.route('https://news.ycombinator.com/**',route=>route.fulfill({contentType:'text/html',body:'<html><body><table><tr class="athing"><td><span class="titleline">We raised a seed round</span></td></tr><tr><td class="subtext">12 comments</td></tr></table></body></html>'}));
+ await page.route('https://news.ycombinator.com/**',route=>route.fulfill({contentType:'text/html',body:'<html><body><table><tr class="athing" id="123"><td><span class="titleline">We raised a seed round</span></td></tr><tr><td class="subtext">12 comments</td></tr></table></body></html>'}));
  await page.goto('https://news.ycombinator.com/');
  await page.getByRole('button',{name:'Show post'}).waitFor();
  assert.equal(await page.locator('.athing').isVisible(),false);
+ await popup.locator('#debug summary').click();
+ await popup.locator('#hidden-posts a').waitFor();
+ assert.equal(await popup.locator('#hidden-posts a').getAttribute('href'),'https://news.ycombinator.com/item?id=123');
  await page.getByRole('button',{name:'Show post'}).click();
  assert.equal(await page.locator('.athing').isVisible(),true);
  await popup.locator('#enabled').uncheck();
  await popup.waitForTimeout(500);
  assert.equal(await page.locator('.athing').isVisible(),true);
+ await popup.getByRole('button',{name:'Clear history',exact:true}).click();
+ await popup.getByText('No muted posts recorded yet.').waitFor();
+ await worker.evaluate(()=>{globalThis.fetch=async()=>new Response('{}',{status:401});});
+ await popup.getByRole('button',{name:'Test connection',exact:true}).click();
+ await popup.getByText(/TypeSafe rejected this key/).waitFor();
+ await worker.evaluate(()=>{globalThis.fetch=async()=>new Response('{}',{status:200});});
+ await popup.getByRole('button',{name:'Test connection',exact:true}).click();
+ await popup.getByText(/Invalid model response/).waitFor();
  console.log('Chromium smoke passed: popup, storage, classification messaging, collapse, reveal, pause.');
 }finally{await ctx.close();await rm(profile,{recursive:true,force:true});}
