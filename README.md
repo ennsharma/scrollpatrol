@@ -21,7 +21,7 @@ The source is free and MIT licensed. Jev is a hosted API, not an included local 
 
 ## Connection checks and mute history
 
-Open **Your Jev connection** to retest a saved key. A saved key is not shown as connected until a live test succeeds. The test checks authentication and the response format, not real-world classification accuracy; it uses a tiny sample post and incurs normal API usage.
+Open **Your Jev connection** and click **Save & test** to check a pasted or previously saved key. Pasting shows an explicit unsaved-key hint; connection feedback stays beside the field. Failed checks keep the draft in place, and storage/messaging failures are shown inline. A saved key is not shown as connected until a live test succeeds. The test checks authentication and the response format, not real-world classification accuracy; it uses a tiny sample post and incurs normal API usage.
 
 **Recently muted** is a collapsed debugging panel with the latest 50 muted posts: excerpt, original post link when available, matching rule, score, site, and timestamp. It records posts actually collapsed by the content script, including cached decisions. It is a historical log, so entries remain after you reveal a post or disable filtering. Repeated posts are deduplicated. **Clear history** removes the local log. No log is uploaded.
 

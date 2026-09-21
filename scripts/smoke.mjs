@@ -21,8 +21,9 @@ try{
  // extension messaging, trusted storage, DOM changes, and popup controls.
  await worker.evaluate(()=>{globalThis.fetch=async()=>new Response(JSON.stringify({answers:{r0:{type:'noul',noul:.99}}}),{status:200});});
  await popup.locator('#key').fill('test-only-not-a-real-key');
+ await popup.getByText('Key entered. Click Save & test to connect.').waitFor();
  await popup.getByRole('button',{name:'Save & test',exact:true}).click();
- await popup.getByText(/Connection verified/).waitFor();
+ await popup.getByText(/Connected to TypeSafe/).waitFor();
  const page=await ctx.newPage();
  await page.route('https://news.ycombinator.com/**',route=>route.fulfill({contentType:'text/html',body:'<html><body><table><tr class="athing" id="123"><td><span class="titleline">We raised a seed round</span></td></tr><tr><td class="subtext">12 comments</td></tr></table></body></html>'}));
  await page.goto('https://news.ycombinator.com/');
@@ -39,10 +40,23 @@ try{
  await popup.getByRole('button',{name:'Clear history',exact:true}).click();
  await popup.getByText('No muted posts recorded yet.').waitFor();
  await worker.evaluate(()=>{globalThis.fetch=async()=>new Response('{}',{status:401});});
- await popup.getByRole('button',{name:'Test connection',exact:true}).click();
+ await popup.locator('#key').fill('rejected-test-key');
+ await popup.getByRole('button',{name:'Save & test',exact:true}).click();
  await popup.getByText(/TypeSafe rejected this key/).waitFor();
+ assert.equal(await popup.locator('#key').inputValue(),'rejected-test-key','Failed verification must preserve the draft');
+ const feedback=await popup.locator('#connection-status').boundingBox();
+ assert.ok(feedback&&feedback.y>=0&&feedback.y+feedback.height<=650,'Connection feedback must be in view');
  await worker.evaluate(()=>{globalThis.fetch=async()=>new Response('{}',{status:200});});
- await popup.getByRole('button',{name:'Test connection',exact:true}).click();
+ await popup.getByRole('button',{name:'Save & test',exact:true}).click();
  await popup.getByText(/Invalid model response/).waitFor();
+ await popup.evaluate(()=>{window.originalSet=chrome.storage.local.set;chrome.storage.local.set=async()=>{throw new Error('Storage unavailable');};});
+ await popup.locator('#key').fill('storage-test-key');
+ await popup.getByRole('button',{name:'Save & test',exact:true}).click();
+ await popup.getByText(/Could not save or check the key/).waitFor();
+ assert.equal(await popup.locator('#key').inputValue(),'storage-test-key');
+ await popup.evaluate(()=>{chrome.storage.local.set=window.originalSet;chrome.runtime.sendMessage=async()=>{throw new Error('Worker unavailable');};});
+ await popup.getByRole('button',{name:'Save & test',exact:true}).click();
+ await popup.getByText(/Could not save or check the key/).waitFor();
+ assert.equal(await popup.getByRole('button',{name:'Save & test',exact:true}).isEnabled(),true);
  console.log('Chromium smoke passed: popup, storage, classification messaging, collapse, reveal, pause.');
 }finally{await ctx.close();await rm(profile,{recursive:true,force:true});}

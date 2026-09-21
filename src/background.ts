@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
         const connection={ok:true,checkedAt:Date.now(),latencyMs:Date.now()-started};
         await chrome.storage.local.set({connection});await chrome.storage.local.remove('lastError');backoffUntil=0;reply(connection);
       }catch(e){const error=errorText(e);if((await chrome.storage.local.get('apiKey')).apiKey===apiKey)await chrome.storage.local.set({connection:{ok:false,checkedAt:Date.now(),error}});reply({ok:false,error});}
-    })();return true;
+    })().catch(()=>reply({ok:false,error:'Could not read or save extension settings. Reload Scrollsafe and try again.'}));return true;
   }
   if(msg?.type==='recordHidden'){
     const job=historyChain.then(async()=>{
