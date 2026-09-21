@@ -84,9 +84,11 @@ node scripts/enrichment-smoke.mjs
 
 API contract: [TypeSafe API reference](https://docs.typesafe.ai/api).
 
-## Before publishing
+## Chrome Web Store preparation
 
-Test authenticated feeds across supported layouts, evaluate false positives with real rules, add store icons/screenshots, and complete the Chrome Web Store privacy disclosure. No live Jev accuracy/cost benchmark has been run yet.
+Run `npm run package` to build `release/scrollsafe-0.1.0.zip`, with the manifest at the ZIP root. Store listing copy, permission disclosures, reviewer instructions, and the upload checklist are in [store/LISTING.md](store/LISTING.md). The store release has not yet been submitted. Live provider accuracy still needs evaluation.
+
+[Privacy policy](PRIVACY.md) · [Report an issue](https://github.com/ennsharma/scrollpatrol/issues)
 
 ## Brand assets
 
