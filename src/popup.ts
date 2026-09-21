@@ -41,7 +41,7 @@ async function renderDiagnostics(){
     const li=document.createElement('li'),title=document.createElement(entry.url?'a':'span'),meta=document.createElement('small');
     title.textContent=entry.text||`Post by ${entry.author||'unknown author'}`;
     if(title instanceof HTMLAnchorElement){try{const url=new URL(entry.url);if(url.protocol==='https:'){title.href=url.href;title.target='_blank';title.rel='noopener noreferrer';}}catch{}}
-    meta.textContent=`${entry.author?`Author: ${entry.author}\n`:''}${entry.site} · ${new Date(entry.hiddenAt).toLocaleString()} · ${Math.round(entry.score*100)}% match\nRule: ${entry.rule}${entry.url?'':' · Post link unavailable'}`;
+    meta.textContent=`${entry.author?`Author: ${entry.author}\n`:''}${entry.community?`${entry.community} · `:''}${entry.site} · ${new Date(entry.hiddenAt).toLocaleString()} · ${Math.round(entry.score*100)}% match\nRule: ${entry.rule}${entry.url?'':' · Post link unavailable'}`;
     li.append(title,meta);$('hidden-posts').append(li);
   }
 }
@@ -86,10 +86,12 @@ async function checkFeed(){
     const result=await chrome.tabs.sendMessage(tab.id,{type:'feedStatus'});
     if(!result)throw new Error('No feed response');
     const lines=[`${result.site}: ${result.detected} posts detected, ${result.readable} with readable text.`,`${result.checked} checked, ${result.muted} muted since the last settings change. ${result.busy?'Checking now…':''}`];
+    lines.push(`${result.authors||0} with author metadata${result.site==='reddit'?`, ${result.communities||0} with subreddit metadata`:''}.`);
+    for(const sample of result.samples||[])lines.push(`Extracted: ${sample.author||'author unavailable'}${sample.community?` · ${sample.community}`:''}\n${sample.text}`);
     if(!result.detected)lines.push('No feed posts found. Open the feed and refresh. If posts are visible, this layout may need an adapter update.');
     else if(!result.readable)lines.push('Post containers found, but their text could not be read.');
     if(result.lastError)lines.push(result.lastError);
-    for(const item of result.recent||[])lines.push(`${item.error||item.skipped||(item.muted?'Muted':'Kept')+(typeof item.score==='number'?` · ${Math.round(item.score*100)}% match`:'')}${item.rule?` · ${item.rule}`:''}\n${item.author?`Author: ${item.author}\n`:''}${item.text}`);
+    for(const item of result.recent||[])lines.push(`${item.error||item.skipped||(item.muted?'Muted':'Kept')+(typeof item.score==='number'?` · ${Math.round(item.score*100)}% match`:'')}${item.rule?` · ${item.rule}`:''}\n${item.author?`Author: ${item.author}\n`:''}${item.community?`${item.community}\n`:''}${item.text}`);
     $('feed-status').textContent=lines.join('\n\n');
   }catch{$('feed-status').textContent='No feed script responded. Open LinkedIn, Reddit, or Hacker News and refresh that tab after reloading the extension.';}
   finally{button.disabled=false;}

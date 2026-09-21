@@ -6,7 +6,7 @@ const revealed=new WeakMap<HTMLElement,string>();
 const hidden=new Map<HTMLElement,()=>void>();
 let generation=0,busy=false,pending=false;
 let checked=0,muted=0,lastError='',lastScan=0;
-const recent:Array<{text:string;author?:string;score?:number;rule?:string;muted:boolean;error?:string;skipped?:string}>=[];
+const recent:Array<{text:string;author?:string;community?:string;score?:number;rule?:string;muted:boolean;error?:string;skipped?:string}>=[];
 const retryAt=new WeakMap<HTMLElement,number>();
 function collapse(el:HTMLElement,rule:string,text:string){
   const nodes=related(el,site),original=nodes.map(n=>[n.style.getPropertyValue('display'),n.style.getPropertyPriority('display')]);
@@ -41,22 +41,23 @@ async function scan(){
     if(!result){seen.delete(el);throw new Error('No response from extension. Reload Scrollsafe and refresh this page.');}
     lastError=result.error||'';
     if(!result.error&&!result.skipped)checked++;
-    recent.unshift({text:text.slice(0,160),author:post.author?.name,score:result.score,rule:result.rule,muted:!!result.muted,error:result.error,skipped:result.skipped});if(recent.length>5)recent.pop();
+    recent.unshift({text:text.slice(0,160),author:post.author?.name,community:post.community,score:result.score,rule:result.rule,muted:!!result.muted,error:result.error,skipped:result.skipped});if(recent.length>5)recent.pop();
     if(result?.error){seen.delete(el);retryAt.set(el,Date.now()+60000);setTimeout(schedule,61000);}
     if(result?.muted&&el.isConnected&&JSON.stringify(postContext(el,site))===fingerprint){
       collapse(el,result.rule,fingerprint);muted++;
-      void chrome.runtime.sendMessage({type:'recordHidden',text,author:post.author?.name,rule:result.rule,score:result.score,url:postUrl(el,site)}).catch(()=>{});
+      void chrome.runtime.sendMessage({type:'recordHidden',text,author:post.author?.name,community:post.community,rule:result.rule,score:result.score,url:postUrl(el,site)}).catch(()=>{});
     }
   }}catch(e){lastError=e instanceof Error?e.message:'Feed scan failed. Refresh this page.';}finally{busy=false;if(current!==generation||pending)schedule();}
 }
 let timer:ReturnType<typeof setTimeout>|undefined;
 function schedule(){if(timer)return;timer=setTimeout(()=>{timer=undefined;void scan();},350);}
-new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','author','post-title','subreddit-name','subreddit-prefixed-name','promoted','href','content-href','componentkey']});
+new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','author','post-title','subreddit-name','subreddit-prefixed-name','promoted','href','content-href','componentkey','data-author','data-subreddit','post-type','permalink']});
 addEventListener('scroll',schedule,{passive:true,capture:true});
 chrome.runtime.onMessage.addListener((message,_sender,reply)=>{
   if(message?.type==='feedStatus'){
     const found=posts(document,site),readable=found.filter(el=>{const p=postContext(el,site);return p.text||p.author||p.linkedArticles?.length;});
-    reply({site,detected:found.length,readable:readable.length,checked,muted,hidden:hidden.size,busy,lastError,lastScan,recent});schedule();return;
+    const contexts=readable.map(el=>postContext(el,site));
+    reply({site,authors:contexts.filter(p=>p.author).length,communities:contexts.filter(p=>p.community).length,samples:contexts.slice(0,3).map(p=>({author:p.author?.name,community:p.community,text:p.text.slice(0,100)})),detected:found.length,readable:readable.length,checked,muted,hidden:hidden.size,busy,lastError,lastScan,recent});schedule();return;
   }
   if(message?.type!=='settingsChanged')return;generation++;checked=0;muted=0;recent.length=0;lastError='';for(const restore of [...hidden.values()])restore();for(const el of posts(document,site)){seen.delete(el);revealed.delete(el);retryAt.delete(el);}schedule();});
 schedule();

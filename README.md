@@ -33,15 +33,15 @@ Open **Your Jev connection** and click **Save & test** to check a pasted or prev
 
 **Recently muted** is a collapsed debugging panel with the latest 50 muted posts: excerpt, extracted author, original post link when available, matching rule, score, site, and timestamp. It records posts actually collapsed by the content script, including cached decisions. It is a historical log, so entries remain after you reveal a post or disable filtering. Repeated posts are deduplicated. **Clear history** removes the local log. No log is uploaded.
 
-Open **Feed diagnostics → Check this tab** from a supported feed to inspect detected/readable post counts, checked/muted counts, errors, and the five latest scores. These diagnostics stay in the current tab’s memory. After reloading the extension, refresh existing feed tabs so they use the new script.
+Open **Feed diagnostics → Check this tab** from a supported feed to inspect detected/readable post counts, checked/muted counts, errors, and the five latest scores. Reddit diagnostics also show username/subreddit coverage and extracted samples; muted history includes the subreddit. These diagnostics stay in the current tab’s memory. After reloading the extension, refresh existing feed tabs so they use the new script.
 
 ## First sites
 
 - **LinkedIn:** feed post text at `/feed/`.
-- **Reddit:** modern `shreddit-post` feeds and old Reddit link listings.
+- **Reddit:** modern `shreddit-post` feeds, `shreddit-ad-post` ads, and old Reddit link listings.
 - **Hacker News:** story titles, with their score/comment metadata hidden together.
 
-Comments, private messages, image-only content, video/audio and full linked articles are outside this version. The LinkedIn adapter covers both legacy cards and the current list-item layout observed on a logged-in feed. Fixture and Chromium tests cover detection, text extraction, and collapsing; live Jev accuracy and Reddit compatibility still need verification. Site markup can change.
+Comments, private messages, image-only content, video/audio and full linked articles are outside this version. The LinkedIn adapter covers both legacy cards and the current list-item layout observed on a logged-in feed. Fixture and Chromium tests cover detection, text extraction, and collapsing. Automated Chromium tests verify username-only and subreddit-only rules, ad cards, infinite-scroll additions, and old Reddit using mocked Jev scores; live model accuracy is not comprehensively benchmarked. Site markup can change.
 
 ## Privacy and behavior
 
@@ -60,6 +60,7 @@ npm run build
 npm test
 npx playwright install chromium
 node scripts/smoke.mjs
+node scripts/reddit-smoke.mjs
 ```
 
 `src/adapters.ts` contains the site selectors. `src/core.ts` builds typed Jev questions and validates responses. The content script handles feed updates; the service worker owns the key and API requests. Build output contains all code locally, compatible with Manifest V3's script policy.

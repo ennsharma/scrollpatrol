@@ -70,3 +70,19 @@ describe('structured post context',()=>{
   expect(r.state.post.author?.name).toBe('Arvind Jain');expect(r.state.post.author?.headline).toHaveLength(400);expect(r.state.post.text).toBe('News');
  });
 });
+
+describe('Reddit feed variants',()=>{
+ it('detects current ad cards and their owner without needing shadow DOM text',()=>{
+  const d=new JSDOM('<shreddit-ad-post author="brand" subreddit-name="u_brand" post-title="A sponsored product" post-type="image" promoted></shreddit-ad-post>').window.document;
+  const found=posts(d,'reddit');expect(found).toHaveLength(1);const p=postContext(found[0],'reddit');
+  expect(p.author?.name).toBe('brand');expect(p.text).toBe('A sponsored product');expect(p.promoted).toBe(true);expect(p.community).toBeUndefined();expect(p.contentTypes).toContain('image');
+ });
+ it('falls back to scoped credit links instead of usernames mentioned in the body',()=>{
+  const d=new JSDOM('<shreddit-post post-title="Title"><span slot="credit-bar"><a href="/user/owner/">owner</a><a href="/r/real_sub/">r/real_sub</a></span><div slot="text-body"><a href="/user/mentioned/">mentioned</a><a href="/r/wrong_sub/">r/wrong_sub</a></div></shreddit-post>',{url:'https://www.reddit.com/'}).window.document;
+  const p=postContext(posts(d,'reddit')[0],'reddit');expect(p.author?.name).toBe('owner');expect(p.community).toBe('r/real_sub');
+ });
+ it('reads old Reddit metadata and does not invent a deleted username',()=>{
+  const d=new JSDOM('<div class="thing link" data-author="owner" data-subreddit="real_sub"><a class="title">Title</a></div><shreddit-post author="[deleted]" post-title="Other" promoted="false"></shreddit-post>').window.document;
+  const found=posts(d,'reddit');expect(postContext(found[0],'reddit').author?.name).toBe('owner');expect(postContext(found[0],'reddit').community).toBe('r/real_sub');expect(postContext(found[1],'reddit').author).toBeUndefined();expect(postContext(found[1],'reddit').promoted).toBeUndefined();
+ });
+});

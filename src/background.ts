@@ -35,9 +35,9 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
       let url='';
       try{const candidate=new URL(msg.url);if(candidate.protocol==='https:'&&siteFor(candidate.hostname)===site)url=candidate.href;}catch{}
       const {hiddenPosts=[]}=await chrome.storage.local.get('hiddenPosts');
-      const entry={text:msg.text.slice(0,240),author:typeof msg.author==='string'?msg.author.slice(0,200):'',rule:msg.rule.slice(0,200),score:typeof msg.score==='number'&&Number.isFinite(msg.score)?Math.max(0,Math.min(1,msg.score)):0,url,site,hiddenAt:Date.now()};
+      const entry={community:typeof msg.community==='string'?msg.community.slice(0,200):'',text:msg.text.slice(0,240),author:typeof msg.author==='string'?msg.author.slice(0,200):'',rule:msg.rule.slice(0,200),score:typeof msg.score==='number'&&Number.isFinite(msg.score)?Math.max(0,Math.min(1,msg.score)):0,url,site,hiddenAt:Date.now()};
       const old=Array.isArray(hiddenPosts)?hiddenPosts:[];
-      await chrome.storage.local.set({hiddenPosts:[entry,...old.filter(p=>url?p.url!==url:p.text!==entry.text||p.author!==entry.author||p.site!==site)].slice(0,50)});
+      await chrome.storage.local.set({hiddenPosts:[entry,...old.filter(p=>url?p.url!==url:p.text!==entry.text||p.author!==entry.author||p.community!==entry.community||p.site!==site)].slice(0,50)});
     });historyChain=job.catch(()=>{});job.then(()=>reply({ok:true})).catch(()=>reply({ok:false}));return true;
   }
   if(msg?.type!=='classify') return;

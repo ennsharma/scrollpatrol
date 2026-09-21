@@ -17,3 +17,4 @@ jobs:
       - run: npm test
       - run: npx playwright install --with-deps chromium
       - run: node scripts/smoke.mjs
+      - run: node scripts/reddit-smoke.mjs

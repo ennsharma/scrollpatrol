@@ -1,7 +1,7 @@
 import type {Site} from './core';
 import {normalizePost,type PostContext} from './context';
 export function posts(doc:Document,site:Site):HTMLElement[] {
-  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2, [role="listitem"][componentkey^="update-card-focus"]',reddit:'shreddit-post, .thing.link'}[site];
+  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2, [role="listitem"][componentkey^="update-card-focus"]',reddit:'shreddit-post, shreddit-ad-post, .thing.link'}[site];
   const found=Array.from(doc.querySelectorAll<HTMLElement>(selector));
   return found.filter(el=>!found.some(parent=>parent!==el&&parent.contains(el)));
 }
@@ -53,11 +53,15 @@ export function postContext(el:HTMLElement,site:Site):PostContext {
     const pulse=Array.from(el.querySelectorAll<HTMLAnchorElement>('a[href*="/pulse/"]')).filter(n=>outsideComments(n)&&!n.closest(BODY)).map(n=>({title:compact(n.textContent),domain:'linkedin.com'})).filter(a=>a.title);
     result.linkedArticles=[...articles,...pulse].slice(0,3);
   }else if(site==='reddit'){
-    const name=compact(el.getAttribute('author')||el.querySelector('a.author')?.textContent);
-    if(name)result.author={name,role:'author'};
-    result.community=compact(el.getAttribute('subreddit-prefixed-name')||el.getAttribute('subreddit-name')||el.querySelector('a.subreddit')?.textContent);
+    const credit=el.querySelector('[slot="credit-bar"]');
+    const authorLink=credit?.querySelector<HTMLAnchorElement>('a[href*="/user/"], a[href*="/u/"]')||el.querySelector<HTMLAnchorElement>('a.author');
+    const name=compact(el.getAttribute('author')||el.getAttribute('data-author')||authorLink?.getAttribute('href')?.match(/\/(?:user|u)\/([^/?#]+)/)?.[1]||authorLink?.textContent).replace(/^u\//,'');
+    if(name&&name!=='[deleted]')result.author={name,role:'author'};
+    const subredditLink=credit?.querySelector<HTMLAnchorElement>('a[href*="/r/"]')||el.querySelector<HTMLAnchorElement>('a.subreddit');
+    const subreddit=compact(el.getAttribute('subreddit-prefixed-name')||el.getAttribute('subreddit-name')||el.getAttribute('data-subreddit')||subredditLink?.getAttribute('href')?.match(/\/r\/([^/?#]+)/)?.[1]||postUrl(el,site).match(/\/r\/([^/?#]+)/)?.[1]);
+    if(subreddit&&!subreddit.startsWith('u_'))result.community=subreddit.startsWith('r/')?subreddit:`r/${subreddit}`;
     result.flair=compact(el.querySelector('[slot="post-flair"], .linkflairlabel')?.textContent);
-    if(el.hasAttribute('promoted')||el.classList.contains('promoted'))result.promoted=true;
+    if(el.localName==='shreddit-ad-post'||(el.hasAttribute('promoted')&&el.getAttribute('promoted')!=='false')||el.classList.contains('promoted'))result.promoted=true;
     const link=el.getAttribute('content-href')||el.querySelector<HTMLAnchorElement>('a.title')?.href;
     if(link)result.linkedArticles=[{title:compact(el.getAttribute('post-title')||el.querySelector('a.title')?.textContent),domain:domain(link,el.ownerDocument.location.href)}];
   }else{
@@ -69,6 +73,7 @@ export function postContext(el:HTMLElement,site:Site):PostContext {
   }
   result.contentTypes=[];
   if(result.text)result.contentTypes.push('text');
+  if(site==='reddit'){const type=el.getAttribute('post-type');if(type==='video')result.contentTypes.push('video');if(type==='image'||type==='gallery')result.contentTypes.push('image');}
   if(Array.from(el.querySelectorAll('video,[aria-label="Video Player"],[data-testid="video-player"]')).some(outsideComments))result.contentTypes.push('video');
   if(Array.from(el.querySelectorAll('.update-components-image img, [slot="post-media-container"] img, [data-testid="image-viewer"] img')).some(n=>outsideComments(n)&&!n.closest('a[href*="/in/"], a[href*="/company/"], .update-components-actor')&&!!n.getAttribute('alt')))result.contentTypes.push('image');
   if(result.linkedArticles?.length)result.contentTypes.push('article');
