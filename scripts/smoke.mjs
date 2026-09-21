@@ -47,6 +47,20 @@ try{
  const report=reports.find(r=>r?.site==='linkedin');
  assert.equal(report.detected,1);assert.equal(report.readable,1);assert.equal(report.checked,1);assert.equal(report.muted,1);assert.equal(report.recent[0].score,.99);
  assert.equal(report.recent[0].text,'A technology startup raised a seed round');
+ // Changing rules must re-evaluate cards already seen on the page.
+ await popup.getByRole('button',{name:'Remove Startup fundraising announcements',exact:true}).click();
+ await linkedin.locator('[componentkey="update-card-focusabc"]').waitFor({state:'visible'});
+ await popup.locator('#rule').fill('All posts about technology and startups');
+ await popup.getByRole('button',{name:'+ Add mute rule',exact:true}).click();
+ await linkedin.locator('[componentkey="update-card-focusabc"]').waitFor({state:'hidden'});
+ // Infinite-scroll additions are classified when they approach the viewport.
+ await linkedin.evaluate(()=>{
+   const spacer=document.createElement('div');spacer.style.height='3000px';document.body.append(spacer);
+   const card=document.createElement('div');card.setAttribute('role','listitem');card.setAttribute('componentkey','update-card-focusnew');
+   card.innerHTML='<span data-testid="expandable-text-box">A newly loaded technology startup post</span>';document.body.append(card);
+ });
+ await linkedin.locator('[componentkey="update-card-focusnew"]').scrollIntoViewIfNeeded();
+ await linkedin.locator('[componentkey="update-card-focusnew"]').waitFor({state:'hidden'});
  await linkedin.close();
  await popup.locator('#enabled').uncheck();
  await popup.waitForTimeout(500);
