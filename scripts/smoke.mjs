@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import assert from 'node:assert/strict';
-const profile=await mkdtemp(resolve(tmpdir(),'semantic-mute-'));
+const profile=await mkdtemp(resolve(tmpdir(),'scrollpatrol-'));
 const extension=resolve('dist');
 const ctx=await chromium.launchPersistentContext(profile,{channel:'chromium',headless:true,args:[`--disable-extensions-except=${extension}`,`--load-extension=${extension}`]});
 try{

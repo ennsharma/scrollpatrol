@@ -1,6 +1,6 @@
-# NopeScope
+# Scrollpatrol
 
-**A little less internet.** An open-source Chrome extension that mutes posts by meaning, with Jev. Working name; repository: semantic-mute.
+**A little less internet.** An open-source Chrome extension that mutes posts by meaning, with Jev.
 
 Describe what you don't want to see: “engagement bait asking me to comment for a link,” “startup funding announcements,” or “arguments about return-to-office policies.” Matching posts collapse into a small strip. **Show post** brings them back.
 
@@ -8,14 +8,14 @@ Describe what you don't want to see: “engagement bait asking me to comment for
 
 1. Install Node.js 22+ and run `npm ci && npm run build`.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose `dist/`.
-3. Open NopeScope from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules.
+3. Open Scrollpatrol from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules.
 4. Open or reload a supported feed. The popup lets you pause filtering, disable individual sites, and adjust the match threshold.
 
 The source is free and MIT licensed. Jev is a hosted API, not an included local model; your API usage is billed by TypeSafe. This is an unpacked alpha, not a Chrome Web Store release.
 
 ## Preview
 
-![NopeScope popup](popup-preview.png)
+![Scrollpatrol popup](popup-preview.png)
 
 ## First sites
 
