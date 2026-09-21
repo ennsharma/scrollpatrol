@@ -61,6 +61,22 @@ try{
  });
  await linkedin.locator('[componentkey="update-card-focusnew"]').scrollIntoViewIfNeeded();
  await linkedin.locator('[componentkey="update-card-focusnew"]').waitFor({state:'hidden'});
+ // Author-only rules must reach the model, and metadata changes must invalidate a cached decision.
+ await worker.evaluate(()=>{globalThis.fetch=async(_url,init)=>{
+   const request=JSON.parse(init.body);
+   if(!request.state.post||typeof request.state.post.text!=='string')throw new Error('Missing structured post');
+   return new Response(JSON.stringify({answers:{r0:{type:'noul',noul:request.state.post.author?.name==='Arvind Jain'?.99:.01}}}),{status:200});
+ };});
+ await popup.getByRole('button',{name:'Remove All posts about technology and startups',exact:true}).click();
+ await linkedin.evaluate(()=>{
+   const card=document.querySelector('[componentkey="update-card-focusnew"]');
+   const owner=document.createElement('button');owner.setAttribute('aria-label','Hide post by Arvind Jain');card.prepend(owner);
+ });
+ await popup.locator('#rule').fill('Hide posts from Arvind Jain');
+ await popup.getByRole('button',{name:'+ Add mute rule',exact:true}).click();
+ await linkedin.locator('[componentkey="update-card-focusnew"]').waitFor({state:'hidden'});
+ await linkedin.evaluate(()=>document.querySelector('[componentkey="update-card-focusnew"] button').setAttribute('aria-label','Hide post by Someone Else'));
+ await linkedin.locator('[componentkey="update-card-focusnew"]').waitFor({state:'visible'});
  await linkedin.close();
  await popup.locator('#enabled').uncheck();
  await popup.waitForTimeout(500);

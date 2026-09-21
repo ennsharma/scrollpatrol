@@ -19,11 +19,19 @@ The source is free and MIT licensed. Jev is a hosted API, not an included local 
 
 ![Scrollsafe popup](popup-preview.png)
 
+## What the filter knows
+
+Posts are sent as structured data, including the body and available author name/headline, visible promotion label, reaction/repost context, link-card titles and domains, and detected media types. Reddit also includes the username, community, and flair; Hacker News labels its username as the **submitter**, not the linked article author.
+
+Author rules use the actual post owner rather than names mentioned in the body, commenters, or people who liked/reposted it. Unknown metadata is omitted; sponsorship is not inferred from promotional language. No profile visits, linked-page fetching, private-message reading, or image/video analysis is performed. Link tracking parameters are not sent. The model still makes probabilistic decisions; author extraction is strongest on the verified English LinkedIn layout, and unknown/localized layouts may omit fields.
+
+Metadata participates in caching and change detection: identical text from different authors is classified separately, and updates to visible author metadata trigger rechecking. Feed diagnostics show the extracted author with recent scores.
+
 ## Connection checks and mute history
 
 Open **Your Jev connection** and click **Save & test** to check a pasted or previously saved key. Pasting shows an explicit unsaved-key hint; connection feedback stays beside the field. Failed checks keep the draft in place, and storage/messaging failures are shown inline. A saved key is not shown as connected until a live test succeeds. The test checks authentication and the response format, not real-world classification accuracy; it uses a tiny sample post and incurs normal API usage.
 
-**Recently muted** is a collapsed debugging panel with the latest 50 muted posts: excerpt, original post link when available, matching rule, score, site, and timestamp. It records posts actually collapsed by the content script, including cached decisions. It is a historical log, so entries remain after you reveal a post or disable filtering. Repeated posts are deduplicated. **Clear history** removes the local log. No log is uploaded.
+**Recently muted** is a collapsed debugging panel with the latest 50 muted posts: excerpt, extracted author, original post link when available, matching rule, score, site, and timestamp. It records posts actually collapsed by the content script, including cached decisions. It is a historical log, so entries remain after you reveal a post or disable filtering. Repeated posts are deduplicated. **Clear history** removes the local log. No log is uploaded.
 
 Open **Feed diagnostics → Check this tab** from a supported feed to inspect detected/readable post counts, checked/muted counts, errors, and the five latest scores. These diagnostics stay in the current tab’s memory. After reloading the extension, refresh existing feed tabs so they use the new script.
 
@@ -37,7 +45,7 @@ Comments, private messages, image-only content, video/audio and full linked arti
 
 ## Privacy and behavior
 
-No analytics, account, backend, or remote executable code. Your key and rules stay in Chrome local storage (not sync). Only the extension's trusted contexts can read that storage. The service worker sends up to 6,000 characters of nearby post text and your rules directly to `api.typesafe.ai` for classification. Do not use it on feeds whose text you do not want to send to TypeSafe; their data policies apply. The extension never sends cookies or collects general browsing history. It stores up to 50 muted-post excerpts (240 characters each), links, matching rules, scores, and timestamps locally until cleared or replaced by newer entries.
+No analytics, account, backend, or remote executable code. Your key and rules stay in Chrome local storage (not sync). Only the extension's trusted contexts can read that storage. The service worker sends up to 6,000 characters of nearby post text, bounded visible post metadata, and your rules directly to `api.typesafe.ai` for classification. Do not use it on feeds whose text you do not want to send to TypeSafe; their data policies apply. The extension never sends cookies or collects general browsing history. It stores up to 50 muted-post excerpts (240 characters each), links, extracted author names, matching rules, scores, and timestamps locally until cleared or replaced by newer entries.
 
 Classification runs sequentially as posts approach the viewport. Up to 1,000 decisions are cached in service-worker memory; they expire when the worker stops or settings change. A page reload may therefore generate more API usage. Each post evaluates at most 10 rules in one API request. Feed classification does not run until a key and a rule are configured. Connection tests only require a saved key. Posts stay visible during evaluation and on failure. API HTTP failures trigger a one-minute cooldown. There is no hard dollar spending cap in the extension; use provider limits if needed.
 
