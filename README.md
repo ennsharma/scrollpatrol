@@ -25,13 +25,15 @@ Open **Your Jev connection** and click **Save & test** to check a pasted or prev
 
 **Recently muted** is a collapsed debugging panel with the latest 50 muted posts: excerpt, original post link when available, matching rule, score, site, and timestamp. It records posts actually collapsed by the content script, including cached decisions. It is a historical log, so entries remain after you reveal a post or disable filtering. Repeated posts are deduplicated. **Clear history** removes the local log. No log is uploaded.
 
+Open **Feed diagnostics → Check this tab** from a supported feed to inspect detected/readable post counts, checked/muted counts, errors, and the five latest scores. These diagnostics stay in the current tab’s memory. After reloading the extension, refresh existing feed tabs so they use the new script.
+
 ## First sites
 
 - **LinkedIn:** feed post text at `/feed/`.
 - **Reddit:** modern `shreddit-post` feeds and old Reddit link listings.
 - **Hacker News:** story titles, with their score/comment metadata hidden together.
 
-Comments, private messages, image-only content, video/audio and full linked articles are outside this version. Fixture tests cover known markup; live logged-in Reddit and LinkedIn compatibility still needs verification. Site markup can change.
+Comments, private messages, image-only content, video/audio and full linked articles are outside this version. The LinkedIn adapter covers both legacy cards and the current list-item layout observed on a logged-in feed. Fixture and Chromium tests cover detection, text extraction, and collapsing; live Jev accuracy and Reddit compatibility still need verification. Site markup can change.
 
 ## Privacy and behavior
 

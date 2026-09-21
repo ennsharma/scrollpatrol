@@ -15,6 +15,7 @@ function render(){
 async function add(rule:string){if(config.rules.length>=10){status('Up to 10 rules for now. Remove one to add another.');return;}if(!rule.trim()||config.rules.includes(rule.trim()))return;config.rules.push(rule.trim().slice(0,200));render();await save();}
 async function init(){const data=await chrome.storage.local.get(['settings','apiKey','lastError']);config=normalize(data.settings);render();$<HTMLDetailsElement>('setup').open=!data.apiKey;status(typeof data.lastError==='string'?data.lastError: (data.apiKey?'':'Add a Jev key to start muting.'));
   await renderDiagnostics();
+  $('check-feed').onclick=()=>{void checkFeed();};
   $<HTMLInputElement>('key').oninput=()=>{connectionStatus('Key entered. Click Save & test to connect.');};
   $('clear-history').onclick=async()=>{await chrome.storage.local.remove('hiddenPosts');await renderDiagnostics();};
   chrome.storage.onChanged.addListener(changes=>{if(changes.connection||changes.hiddenPosts||changes.apiKey)void renderDiagnostics();if(changes.lastError)status(typeof changes.lastError.newValue==='string'?changes.lastError.newValue:'');});
@@ -76,3 +77,20 @@ async function testConnection(){
   }
 }
 void init().catch(()=>{connectionStatus('Setup failed to load. Reload Scrollsafe at chrome://extensions and reopen this popup.','error');$<HTMLDetailsElement>('setup').open=true;});
+
+async function checkFeed(){
+  const button=$<HTMLButtonElement>('check-feed');button.disabled=true;
+  try{
+    const [tab]=await chrome.tabs.query({active:true,currentWindow:true});
+    if(!tab?.id)throw new Error('No active tab');
+    const result=await chrome.tabs.sendMessage(tab.id,{type:'feedStatus'});
+    if(!result)throw new Error('No feed response');
+    const lines=[`${result.site}: ${result.detected} posts detected, ${result.readable} with readable text.`,`${result.checked} checked, ${result.muted} muted since the last settings change. ${result.busy?'Checking now…':''}`];
+    if(!result.detected)lines.push('No feed posts found. Open the feed and refresh. If posts are visible, this layout may need an adapter update.');
+    else if(!result.readable)lines.push('Post containers found, but their text could not be read.');
+    if(result.lastError)lines.push(result.lastError);
+    for(const item of result.recent||[])lines.push(`${item.error||item.skipped||(item.muted?'Muted':'Kept')+(typeof item.score==='number'?` · ${Math.round(item.score*100)}% match`:'')}${item.rule?` · ${item.rule}`:''}\n${item.text}`);
+    $('feed-status').textContent=lines.join('\n\n');
+  }catch{$('feed-status').textContent='No feed script responded. Open LinkedIn, Reddit, or Hacker News and refresh that tab after reloading the extension.';}
+  finally{button.disabled=false;}
+}

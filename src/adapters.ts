@@ -1,11 +1,12 @@
 import type {Site} from './core';
 export function posts(doc:Document,site:Site):HTMLElement[] {
-  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2',reddit:'shreddit-post, .thing.link'}[site];
-  return Array.from(doc.querySelectorAll<HTMLElement>(selector));
+  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2, [role="listitem"][componentkey^="update-card-focus"]',reddit:'shreddit-post, .thing.link'}[site];
+  const found=Array.from(doc.querySelectorAll<HTMLElement>(selector));
+  return found.filter(el=>!found.some(parent=>parent!==el&&parent.contains(el)));
 }
 export function postText(el:HTMLElement,site:Site):string {
-  const selector={hn:'.titleline',linkedin:'.update-components-text',reddit:'[slot="title"], [slot="text-body"], a.title'}[site];
-  const fragments=Array.from(el.querySelectorAll(selector)).map(n=>n.textContent||'');
+  const selector={hn:'.titleline',linkedin:'.update-components-text, [data-testid="expandable-text-box"]',reddit:'[slot="title"], [slot="text-body"], a.title'}[site];
+  const fragments=Array.from(el.querySelectorAll(selector)).filter(n=>!n.closest('[componentkey^="replaceableComment_"]')).map(n=>n.textContent||'');
   return (fragments.join('\n')||el.getAttribute('post-title')||'').replace(/\s+/g,' ').trim().slice(0,6000);
 }
 export function related(el:HTMLElement,site:Site):HTMLElement[] {

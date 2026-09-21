@@ -22,3 +22,14 @@ describe('post permalinks',()=>{
  it('builds LinkedIn activity links and leaves missing links empty',()=>{const d=new JSDOM('<div data-urn="urn:li:activity:123"></div><section></section>').window.document;expect(postUrl(d.querySelector('div')!,'linkedin')).toBe('https://www.linkedin.com/feed/update/urn:li:activity:123/');expect(postUrl(d.querySelector('section')!,'linkedin')).toBe('');});
  it('rejects executable links',()=>{const d=new JSDOM('<shreddit-post permalink="javascript:alert(1)"></shreddit-post>').window.document;expect(postUrl(posts(d,'reddit')[0],'reddit')).toBe('');});
 });
+
+describe('current LinkedIn feed',()=>{
+ it('finds current list cards and excludes preview comments from post text',()=>{
+  const d=new JSDOM('<div role="listitem" componentkey="update-card-focusabc"><div><h2>Feed post</h2><span data-testid="expandable-text-box">Technology and startup news</span><div componentkey="replaceableComment_123"><span data-testid="expandable-text-box">Comment about cooking</span></div></div></div>').window.document;
+  expect(posts(d,'linkedin')).toHaveLength(1);expect(postText(posts(d,'linkedin')[0],'linkedin')).toBe('Technology and startup news');
+ });
+ it('does not classify nested legacy and new containers twice',()=>{
+  const d=new JSDOM('<div role="listitem" componentkey="update-card-focusabc"><div class="feed-shared-update-v2"><div class="update-components-text">Startup</div></div></div>').window.document;
+  expect(posts(d,'linkedin')).toHaveLength(1);
+ });
+});

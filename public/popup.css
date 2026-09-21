@@ -3,3 +3,5 @@
 #connection-status{font-size:12px;line-height:1.5}#connection-status[data-state=success]{color:#176148}#connection-status[data-state=error]{color:#aa2f32}#hidden-posts{max-height:280px;overflow:auto;margin:12px 0}#hidden-posts li{display:block;font-size:12px;overflow-wrap:anywhere}#hidden-posts small{display:block;color:#526b95;white-space:pre-line;margin-top:6px}button:disabled{opacity:.6;cursor:wait}
 
 .brand{width:235px;min-width:0}.brand h1{line-height:0}.wordmark{display:block;width:260px;height:108px;max-width:none;margin:-22px 0 -15px -30px;object-fit:contain}.brand p{margin:0;font-size:12px}
+
+#feed-status{white-space:pre-line;overflow-wrap:anywhere;font-size:12px;max-height:300px;overflow:auto}#check-feed{margin-top:12px}

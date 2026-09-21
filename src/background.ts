@@ -46,7 +46,7 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
     if(!sender.tab||!site||typeof msg.text!=='string'||msg.text.length>6000) throw new Error('Unsupported request');
     const {settings,apiKey}=await chrome.storage.local.get(['settings','apiKey']);
     const config=normalize(settings);
-    if(!config.enabled||!config.sites[site]||!config.rules.length) return {muted:false};
+    if(!config.enabled||!config.sites[site]||!config.rules.length) return {muted:false,skipped:!config.enabled?'Filtering is paused.':!config.sites[site]?'Filtering is disabled for this site.':'No mute rules configured.'};
     if(typeof apiKey!=='string'||!apiKey) throw new Error('Add your Jev API key in Scrollsafe.');
     const key=JSON.stringify([msg.text,config.rules,config.threshold]);
     if(cache.has(key)) return cache.get(key);

@@ -23,7 +23,7 @@ try{
  await popup.locator('#key').fill('test-only-not-a-real-key');
  await popup.getByText('Key entered. Click Save & test to connect.').waitFor();
  await popup.getByRole('button',{name:'Save & test',exact:true}).click();
- await popup.getByText(/Connected to TypeSafe/).waitFor();
+ await popup.getByText(/Connected to TypeSafe|Connection verified/).waitFor();
  const page=await ctx.newPage();
  await page.route('https://news.ycombinator.com/**',route=>route.fulfill({contentType:'text/html',body:'<html><body><table><tr class="athing" id="123"><td><span class="titleline">We raised a seed round</span></td></tr><tr><td class="subtext">12 comments</td></tr></table></body></html>'}));
  await page.goto('https://news.ycombinator.com/');
@@ -34,6 +34,20 @@ try{
  assert.equal(await popup.locator('#hidden-posts a').getAttribute('href'),'https://news.ycombinator.com/item?id=123');
  await page.getByRole('button',{name:'Show post'}).click();
  assert.equal(await page.locator('.athing').isVisible(),true);
+ const linkedin=await ctx.newPage();
+ await linkedin.route('https://www.linkedin.com/**',route=>route.fulfill({contentType:'text/html',body:'<html><body><main>Network</main></body></html>'}));
+ await linkedin.goto('https://www.linkedin.com/mynetwork/');
+ await linkedin.evaluate(()=>{
+   history.pushState({},'', '/feed/');
+   document.querySelector('main').innerHTML='<div role="listitem" componentkey="update-card-focusabc"><h2>Feed post</h2><span data-testid="expandable-text-box">A technology startup raised a seed round</span><div componentkey="replaceableComment_123"><span data-testid="expandable-text-box">Comment about cooking</span></div></div>';
+ });
+ await linkedin.getByRole('button',{name:'Show post'}).waitFor();
+ assert.equal(await linkedin.locator('[componentkey="update-card-focusabc"]').isVisible(),false);
+ const reports=await worker.evaluate(async()=>Promise.all((await chrome.tabs.query({})).map(tab=>chrome.tabs.sendMessage(tab.id,{type:'feedStatus'}).catch(()=>null))));
+ const report=reports.find(r=>r?.site==='linkedin');
+ assert.equal(report.detected,1);assert.equal(report.readable,1);assert.equal(report.checked,1);assert.equal(report.muted,1);assert.equal(report.recent[0].score,.99);
+ assert.equal(report.recent[0].text,'A technology startup raised a seed round');
+ await linkedin.close();
  await popup.locator('#enabled').uncheck();
  await popup.waitForTimeout(500);
  assert.equal(await page.locator('.athing').isVisible(),true);
