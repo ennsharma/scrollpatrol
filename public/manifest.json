@@ -7,7 +7,8 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api.typesafe.ai/*"
+    "https://api.typesafe.ai/*",
+    "https://generativelanguage.googleapis.com/*"
   ],
   "background": {
     "service_worker": "background.js"

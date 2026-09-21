@@ -19,3 +19,4 @@ jobs:
       - run: node scripts/smoke.mjs
       - run: node scripts/reddit-smoke.mjs
       - run: node scripts/video-smoke.mjs
+      - run: node scripts/enrichment-smoke.mjs

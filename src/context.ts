@@ -8,6 +8,8 @@ export interface PostContext {
   community?: string;
   flair?: string;
   audio?: string;
+  transcript?: string;
+  visual?: {description:string;visibleText:string;frames:number};
   contentTypes?: string[];
   linkedArticles?: Array<{title: string; domain?: string}>;
 }
@@ -23,6 +25,8 @@ export function normalizePost(input:unknown):PostContext {
     if(name)post.author={name,role:author.role==='submitter'?'submitter':'author',...(headline?{headline}:{})};
   }
   for(const key of ['socialContext','community','flair','audio'] as const){const value=clean(raw[key],300);if(value)post[key]=value;}
+  const transcript=clean(raw.transcript,4000);if(transcript)post.transcript=transcript;
+  if(raw.visual&&typeof raw.visual==='object'){const v=raw.visual as Record<string,unknown>;const description=clean(v.description,1200);if(description)post.visual={description,visibleText:clean(v.visibleText,1200),frames:Math.max(1,Math.min(2,Number(v.frames)||1))};}
   if(typeof raw.promoted==='boolean')post.promoted=raw.promoted;
   if(Array.isArray(raw.contentTypes))post.contentTypes=[...new Set(raw.contentTypes.filter(v=>['image','video','article','text'].includes(v)))];
   if(Array.isArray(raw.linkedArticles))post.linkedArticles=raw.linkedArticles.slice(0,3).filter(a=>a&&typeof a==='object').map(a=>({title:clean(a.title,300),domain:clean(a.domain,150)})).filter(a=>a.title||a.domain);

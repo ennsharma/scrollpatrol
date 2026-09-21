@@ -5,3 +5,5 @@
 .brand{width:235px;min-width:0}.brand h1{line-height:0}.wordmark{display:block;width:260px;height:108px;max-width:none;margin:-22px 0 -15px -30px;object-fit:contain}.brand p{margin:0;font-size:12px}
 
 #feed-status{white-space:pre-line;overflow-wrap:anywhere;font-size:12px;max-height:300px;overflow:auto}#check-feed{margin-top:12px}
+
+#vision-form button{margin:6px 0}#vision-form label,#deeper-setup>label{display:block;margin-top:12px}#vision-connection,#vision-usage{font-size:12px;overflow-wrap:anywhere}#daily-budget{width:100%;padding:8px;border:1px solid #adc1e8;border-radius:8px;font:inherit;background:white;color:inherit}

@@ -1,3 +1,4 @@
+import {transcriptFor} from './enrichment';
 import type {Site} from './core';
 import type {PostContext} from './context';
 export const videoSite=(site:Site)=>site==='youtube'||site==='tiktok'||site==='instagram';
@@ -44,7 +45,8 @@ export function videoContext(el:HTMLElement,site:Site):PostContext{
     text=Array.from(el.querySelectorAll('[role="button"], button')).filter(n=>!n.querySelector('[role="button"],button,video,svg')&&!n.hasAttribute('aria-label')).map(n=>clean(n.textContent)).filter(t=>t&&!/^(Follow|Following|Follow back|Audio is muted|Audio is playing|Play button icon|More|See more)$/i.test(t)).join(' ');
     audio=clean(el.querySelector('a[href*="/reels/audio/"]')?.textContent);
   }
-  return {site,text,...(name?{author:{name,role:'author' as const}}:{}),...(audio?{audio}:{}),contentTypes:['video']};
+  const transcript=transcriptFor(el,site,JSON.stringify([text,name,audio]));
+  return {site,text,...(transcript?{transcript}:{}),...(name?{author:{name,role:'author' as const}}:{}),...(audio?{audio}:{}),contentTypes:['video']};
 }
 export function videoUrl(el:HTMLElement,site:Site){
   const selector=site==='youtube'?'a[href*="/shorts/"]':site==='tiktok'?'a[href*="/video/"]':'a[href*="/reel/"], a[href*="/reels/"]';
