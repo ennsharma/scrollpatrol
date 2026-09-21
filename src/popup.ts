@@ -9,7 +9,7 @@ function render(){
   $('rules').replaceChildren();$('empty').hidden=!!config.rules.length;
   config.rules.forEach((rule,index)=>{const li=document.createElement('li'),span=document.createElement('span'),button=document.createElement('button');span.textContent=rule;button.textContent='×';button.setAttribute('aria-label',`Remove ${rule}`);button.onclick=async()=>{config.rules.splice(index,1);render();await save();};li.append(span,button);$('rules').append(li);});
   $<HTMLInputElement>('enabled').checked=config.enabled;
-  for(const site of ['linkedin','reddit','hn'] as Site[])$<HTMLInputElement>(site).checked=config.sites[site];
+  for(const site of ['linkedin','reddit','hn','youtube','tiktok','instagram'] as Site[])$<HTMLInputElement>(site).checked=config.sites[site];
   $<HTMLInputElement>('threshold').value=String(Math.round(config.threshold*100));$('threshold-value').textContent=`${Math.round(config.threshold*100)}%`;
 }
 async function add(rule:string){if(config.rules.length>=10){status('Up to 10 rules for now. Remove one to add another.');return;}if(!rule.trim()||config.rules.includes(rule.trim()))return;config.rules.push(rule.trim().slice(0,200));render();await save();}
@@ -22,7 +22,7 @@ async function init(){const data=await chrome.storage.local.get(['settings','api
   $('rule-form').onsubmit=async e=>{e.preventDefault();await add($<HTMLTextAreaElement>('rule').value);$<HTMLTextAreaElement>('rule').value='';};
   document.querySelectorAll<HTMLButtonElement>('[data-rule]').forEach(b=>b.onclick=()=>{void add(b.dataset.rule!);});
   $<HTMLInputElement>('enabled').onchange=async e=>{config.enabled=(e.target as HTMLInputElement).checked;await save();};
-  for(const site of ['linkedin','reddit','hn'] as Site[])$<HTMLInputElement>(site).onchange=async e=>{config.sites[site]=(e.target as HTMLInputElement).checked;await save();};
+  for(const site of ['linkedin','reddit','hn','youtube','tiktok','instagram'] as Site[])$<HTMLInputElement>(site).onchange=async e=>{config.sites[site]=(e.target as HTMLInputElement).checked;await save();};
   $<HTMLInputElement>('threshold').oninput=e=>{$('threshold-value').textContent=`${(e.target as HTMLInputElement).value}%`;};
   $<HTMLInputElement>('threshold').onchange=async e=>{config.threshold=Number((e.target as HTMLInputElement).value)/100;await save();};
   $('key-form').onsubmit=e=>{e.preventDefault();void testConnection();};
@@ -85,7 +85,7 @@ async function checkFeed(){
     if(!tab?.id)throw new Error('No active tab');
     const result=await chrome.tabs.sendMessage(tab.id,{type:'feedStatus'});
     if(!result)throw new Error('No feed response');
-    const lines=[`${result.site}: ${result.detected} posts detected, ${result.readable} with readable text.`,`${result.checked} checked, ${result.muted} muted since the last settings change. ${result.busy?'Checking now…':''}`];
+    const lines=[`${result.site}: ${result.detected} posts detected, ${result.readable} with readable context.`,`${result.checked} checked, ${result.muted} muted since the last settings change. ${result.busy?'Checking now…':''}`];
     lines.push(`${result.authors||0} with author metadata${result.site==='reddit'?`, ${result.communities||0} with subreddit metadata`:''}.`);
     for(const sample of result.samples||[])lines.push(`Extracted: ${sample.author||'author unavailable'}${sample.community?` · ${sample.community}`:''}\n${sample.text}`);
     if(!result.detected)lines.push('No feed posts found. Open the feed and refresh. If posts are visible, this layout may need an adapter update.');
@@ -93,6 +93,6 @@ async function checkFeed(){
     if(result.lastError)lines.push(result.lastError);
     for(const item of result.recent||[])lines.push(`${item.error||item.skipped||(item.muted?'Muted':'Kept')+(typeof item.score==='number'?` · ${Math.round(item.score*100)}% match`:'')}${item.rule?` · ${item.rule}`:''}\n${item.author?`Author: ${item.author}\n`:''}${item.community?`${item.community}\n`:''}${item.text}`);
     $('feed-status').textContent=lines.join('\n\n');
-  }catch{$('feed-status').textContent='No feed script responded. Open LinkedIn, Reddit, or Hacker News and refresh that tab after reloading the extension.';}
+  }catch{$('feed-status').textContent='No feed script responded. Open a supported feed and refresh that tab after reloading the extension.';}
   finally{button.disabled=false;}
 }

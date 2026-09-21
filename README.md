@@ -40,8 +40,11 @@ Open **Feed diagnostics → Check this tab** from a supported feed to inspect de
 - **LinkedIn:** feed post text at `/feed/`.
 - **Reddit:** modern `shreddit-post` feeds, `shreddit-ad-post` ads, and old Reddit link listings.
 - **Hacker News:** story titles, with their score/comment metadata hidden together.
+- **YouTube Shorts, TikTok, Instagram Reels (desktop web, beta):** creator names and available titles, captions, hashtags, and sound labels. Each has its own toggle. YouTube is limited to `/shorts/`, Instagram to the `/reels/` viewer, and TikTok to For You, Following, and Friends feeds.
 
-Comments, private messages, image-only content, video/audio and full linked articles are outside this version. The LinkedIn adapter covers both legacy cards and the current list-item layout observed on a logged-in feed. Fixture and Chromium tests cover detection, text extraction, and collapsing. Automated Chromium tests verify username-only and subreddit-only rules, ad cards, infinite-scroll additions, and old Reddit using mocked Jev scores; live model accuracy is not comprehensively benchmarked. Site markup can change.
+Matched short videos are covered in place and paused, with a **Show video** button. Scroll normally to the next video. Revealing restores the player; press play if needed. Rules also recheck existing cards and newly loaded/recycled players. This uses metadata only: no frame analysis, OCR, speech transcription, or video uploads. A clip with an uninformative caption may not match a topic rule even if its visuals or speech do. Testing covers simulated feeds and mocked model responses; live model accuracy is not benchmarked.
+
+Comments, private messages, image analysis, video/audio analysis and full linked articles are outside this version. The LinkedIn adapter covers both legacy cards and the current list-item layout observed on a logged-in feed. Fixture and Chromium tests cover detection, text extraction, and collapsing. Automated Chromium tests verify username-only and subreddit-only rules, ad cards, infinite-scroll additions, and old Reddit using mocked Jev scores; live model accuracy is not comprehensively benchmarked. Site markup can change.
 
 ## Privacy and behavior
 
@@ -61,6 +64,7 @@ npm test
 npx playwright install chromium
 node scripts/smoke.mjs
 node scripts/reddit-smoke.mjs
+node scripts/video-smoke.mjs
 ```
 
 `src/adapters.ts` contains the site selectors. `src/core.ts` builds typed Jev questions and validates responses. The content script handles feed updates; the service worker owns the key and API requests. Build output contains all code locally, compatible with Manifest V3's script policy.

@@ -1,12 +1,15 @@
+import {videoSite,videoPosts,videoContext,videoUrl} from './video';
 import type {Site} from './core';
 import {normalizePost,type PostContext} from './context';
 export function posts(doc:Document,site:Site):HTMLElement[] {
-  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2, [role="listitem"][componentkey^="update-card-focus"]',reddit:'shreddit-post, shreddit-ad-post, .thing.link'}[site];
+  if(videoSite(site))return videoPosts(doc,site);
+  const selector={hn:'tr.athing',linkedin:'.feed-shared-update-v2, [role="listitem"][componentkey^="update-card-focus"]',reddit:'shreddit-post, shreddit-ad-post, .thing.link'}[site as 'hn'|'linkedin'|'reddit'];
   const found=Array.from(doc.querySelectorAll<HTMLElement>(selector));
   return found.filter(el=>!found.some(parent=>parent!==el&&parent.contains(el)));
 }
 export function postText(el:HTMLElement,site:Site):string {
-  const selector={hn:'.titleline',linkedin:'.update-components-text, [data-testid="expandable-text-box"]',reddit:'[slot="title"], [slot="text-body"], a.title'}[site];
+  if(videoSite(site))return videoContext(el,site).text;
+  const selector={hn:'.titleline',linkedin:'.update-components-text, [data-testid="expandable-text-box"]',reddit:'[slot="title"], [slot="text-body"], a.title'}[site as 'hn'|'linkedin'|'reddit'];
   const fragments=Array.from(el.querySelectorAll(selector)).filter(n=>!n.closest('[componentkey^="replaceableComment_"]')).map(n=>n.textContent||'');
   return (fragments.join('\n')||el.getAttribute('post-title')||'').replace(/\s+/g,' ').trim().slice(0,6000);
 }
@@ -15,6 +18,7 @@ export function related(el:HTMLElement,site:Site):HTMLElement[] {
   return site==='hn'&&next?.querySelector('.subtext')?[el,next]:[el];
 }
 export function postUrl(el:HTMLElement,site:Site):string {
+  if(videoSite(site))return videoUrl(el,site);
   if(site==='hn'&&/^\d+$/.test(el.id))return `https://news.ycombinator.com/item?id=${el.id}`;
   if(site==='linkedin'){
     const urn=el.getAttribute('data-urn');
@@ -31,6 +35,7 @@ const compact=(value:string|null|undefined)=>value?.replace(/\s+/g,' ').trim()||
 function outsideComments(el:Element){return !el.closest(COMMENT);}
 function domain(href:string,base:string){try{const url=new URL(href,base);return ['https:','http:'].includes(url.protocol)?url.hostname:'';}catch{return '';}}
 export function postContext(el:HTMLElement,site:Site):PostContext {
+  if(videoSite(site))return normalizePost(videoContext(el,site));
   const result:PostContext={site,text:postText(el,site)};
   if(site==='linkedin'){
     // Post controls identify the owner; profile links also include reactors and mentions.

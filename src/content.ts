@@ -1,14 +1,17 @@
+import {videoSite,videoPage,coverVideo} from './video';
 import {siteFor} from './core';
 import {posts,postText,related,postUrl,postContext} from './adapters';
 const site=siteFor(location.hostname)!;
-const seen=new WeakMap<HTMLElement,string>();
-const revealed=new WeakMap<HTMLElement,string>();
+let seen=new WeakMap<HTMLElement,string>();
+let revealed=new WeakMap<HTMLElement,string>();
 const hidden=new Map<HTMLElement,()=>void>();
 let generation=0,busy=false,pending=false;
 let checked=0,muted=0,lastError='',lastScan=0;
 const recent:Array<{text:string;author?:string;community?:string;score?:number;rule?:string;muted:boolean;error?:string;skipped?:string}>=[];
 const retryAt=new WeakMap<HTMLElement,number>();
+const fingerprintFor=(el:HTMLElement,post:ReturnType<typeof postContext>)=>JSON.stringify([post,...(videoSite(site)?Array.from(el.querySelectorAll('video')).map(v=>v.getAttribute('src')):[])]);
 function collapse(el:HTMLElement,rule:string,text:string){
+  if(videoSite(site)){const restore=coverVideo(el,rule,()=>{revealed.set(el,text);hidden.get(el)?.();});hidden.set(el,()=>{restore();hidden.delete(el);});return;}
   const nodes=related(el,site),original=nodes.map(n=>[n.style.getPropertyValue('display'),n.style.getPropertyPriority('display')]);
   const placeholder=document.createElement(site==='hn'?'tr':'div');
   const mount=site==='hn'?placeholder.appendChild(document.createElement('td')):placeholder;
@@ -24,12 +27,13 @@ function collapse(el:HTMLElement,rule:string,text:string){
 }
 async function scan(){
   if(busy){pending=true;return;}
+  if(!videoPage(site,location.pathname)){for(const restore of [...hidden.values()])restore();return;}
   if(site==='linkedin'&&!location.pathname.startsWith('/feed'))return;
-  busy=true;pending=false;lastScan=Date.now();const current=generation;
+  busy=true;pending=false;lastScan=Date.now();const current=generation,currentPath=location.pathname;
   try{for(const [el,restore] of hidden)if(!el.isConnected)restore();
   for(const el of posts(document,site)){
     if(current!==generation)break;
-    const post=postContext(el,site),text=post.text,fingerprint=JSON.stringify(post);
+    const post=postContext(el,site),text=post.text,fingerprint=fingerprintFor(el,post);
     if(hidden.has(el)&&seen.get(el)!==fingerprint)hidden.get(el)!();
     if((!text&&!post.author&&!post.linkedArticles?.length)||seen.get(el)===fingerprint||revealed.get(el)===fingerprint||(retryAt.get(el)||0)>Date.now())continue;
     if(el.getBoundingClientRect().top>innerHeight+800)continue;
@@ -37,13 +41,13 @@ async function scan(){
     let result;
     try{result=await chrome.runtime.sendMessage({type:'classify',post});}
     catch{seen.delete(el);throw new Error('Feed script lost its extension connection. Refresh this page.');}
-    if(current!==generation){seen.delete(el);break;}
+    if(current!==generation||currentPath!==location.pathname){seen.delete(el);schedule();break;}
     if(!result){seen.delete(el);throw new Error('No response from extension. Reload Scrollsafe and refresh this page.');}
     lastError=result.error||'';
     if(!result.error&&!result.skipped)checked++;
     recent.unshift({text:text.slice(0,160),author:post.author?.name,community:post.community,score:result.score,rule:result.rule,muted:!!result.muted,error:result.error,skipped:result.skipped});if(recent.length>5)recent.pop();
     if(result?.error){seen.delete(el);retryAt.set(el,Date.now()+60000);setTimeout(schedule,61000);}
-    if(result?.muted&&el.isConnected&&JSON.stringify(postContext(el,site))===fingerprint){
+    if(result?.muted&&el.isConnected&&fingerprintFor(el,postContext(el,site))===fingerprint){
       collapse(el,result.rule,fingerprint);muted++;
       void chrome.runtime.sendMessage({type:'recordHidden',text,author:post.author?.name,community:post.community,rule:result.rule,score:result.score,url:postUrl(el,site)}).catch(()=>{});
     }
@@ -51,7 +55,7 @@ async function scan(){
 }
 let timer:ReturnType<typeof setTimeout>|undefined;
 function schedule(){if(timer)return;timer=setTimeout(()=>{timer=undefined;void scan();},350);}
-new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','author','post-title','subreddit-name','subreddit-prefixed-name','promoted','href','content-href','componentkey','data-author','data-subreddit','post-type','permalink']});
+new MutationObserver(schedule).observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['aria-label','author','post-title','subreddit-name','subreddit-prefixed-name','promoted','href','content-href','componentkey','data-author','data-subreddit','post-type','permalink','video-id','src','active']});
 addEventListener('scroll',schedule,{passive:true,capture:true});
 chrome.runtime.onMessage.addListener((message,_sender,reply)=>{
   if(message?.type==='feedStatus'){
@@ -61,3 +65,8 @@ chrome.runtime.onMessage.addListener((message,_sender,reply)=>{
   }
   if(message?.type!=='settingsChanged')return;generation++;checked=0;muted=0;recent.length=0;lastError='';for(const restore of [...hidden.values()])restore();for(const el of posts(document,site)){seen.delete(el);revealed.delete(el);retryAt.delete(el);}schedule();});
 schedule();
+
+if(videoSite(site)){
+  const style=document.createElement('style');style.textContent='[data-scrollsafe-video-muted] > :not([data-scrollsafe-cover]){visibility:hidden!important}';document.head.append(style);
+  let lastPath=location.pathname;setInterval(()=>{if(location.pathname!==lastPath){lastPath=location.pathname;generation++;for(const restore of [...hidden.values()])restore();seen=new WeakMap();revealed=new WeakMap();schedule();}},1000);
+}
