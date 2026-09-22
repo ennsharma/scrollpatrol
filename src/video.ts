@@ -61,8 +61,8 @@ export function videoUrl(el:HTMLElement,site:Site){
 export function coverVideo(el:HTMLElement,rule:string,onReveal:()=>void):()=>void{
   const position=el.style.getPropertyValue('position'),priority=el.style.getPropertyPriority('position');
   if(getComputedStyle(el).position==='static')el.style.setProperty('position','relative','important');
-  el.setAttribute('data-scrollsafe-video-muted','');
-  const cover=document.createElement('div');cover.setAttribute('data-scrollsafe-cover','');
+  el.setAttribute('data-scrollpatrol-video-muted','');
+  const cover=document.createElement('div');cover.setAttribute('data-scrollpatrol-cover','');
   cover.style.cssText='position:absolute!important;inset:0!important;z-index:2147483647!important;visibility:visible!important;display:block!important;background:#111827!important;';
   const shadow=cover.attachShadow({mode:'open'}),box=document.createElement('div');
   box.style.cssText='box-sizing:border-box;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;color:#f8fafc;font:15px system-ui;text-align:center;background:#111827;';
@@ -73,7 +73,7 @@ export function coverVideo(el:HTMLElement,rule:string,onReveal:()=>void):()=>voi
   const muted=new Map<HTMLMediaElement,boolean>();
   const stop=()=>{for(const media of el.querySelectorAll<HTMLMediaElement>('video,audio')){if(!muted.has(media))muted.set(media,media.muted);if(!media.muted)media.muted=true;media.pause();}};
   el.addEventListener('play',stop,true);el.addEventListener('volumechange',stop,true);stop();
-  const restore=()=>{el.removeEventListener('play',stop,true);el.removeEventListener('volumechange',stop,true);for(const [media,value] of muted)media.muted=value;el.removeAttribute('data-scrollsafe-video-muted');cover.remove();if(position)el.style.setProperty('position',position,priority);else el.style.removeProperty('position');};
+  const restore=()=>{el.removeEventListener('play',stop,true);el.removeEventListener('volumechange',stop,true);for(const [media,value] of muted)media.muted=value;el.removeAttribute('data-scrollpatrol-video-muted');cover.remove();if(position)el.style.setProperty('position',position,priority);else el.style.removeProperty('position');};
   button.onclick=e=>{e.stopPropagation();onReveal();};
   return restore;
 }

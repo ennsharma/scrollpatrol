@@ -1,12 +1,12 @@
-# Scrollsafe privacy policy
+# Scrollpatrol privacy policy
 
-Effective September 21, 2026. Scrollsafe is an open-source browser extension maintained by Nikhil Sharma.
+Effective September 21, 2026. Scrollpatrol is an open-source browser extension maintained by Nikhil Sharma.
 
 ## Purpose and data processing
 
-Scrollsafe filters supported social feeds according to rules you enter. When you configure a TypeSafe API key and rules and leave filtering enabled, it sends nearby feed post text, available author names/usernames, community names, visible metadata, loaded subtitles, and your rules to TypeSafe (`api.typesafe.ai`) for classification. Feed content can contain personal or sensitive information. The extension does not access private messages, visit profiles, or fetch linked articles.
+Scrollpatrol filters supported social feeds according to rules you enter. When you configure a TypeSafe API key and rules and leave filtering enabled, it sends nearby feed post text, available author names/usernames, community names, visible metadata, loaded subtitles, and your rules to TypeSafe (`api.typesafe.ai`) for classification. Feed content can contain personal or sensitive information. The extension does not access private messages, visit profiles, or fetch linked articles.
 
-If you separately enable optional deeper video filtering, up to two resized video frames are sent to Google's Gemini API (`generativelanguage.googleapis.com`) for a description and on-screen text. That description is sent to TypeSafe for rule matching. This feature is off by default. Scrollsafe does not record audio, access your microphone, or capture whole-page screenshots. Connection tests send a generated sample post or image to the selected provider.
+If you separately enable optional deeper video filtering, up to two resized video frames are sent to Google's Gemini API (`generativelanguage.googleapis.com`) for a description and on-screen text. That description is sent to TypeSafe for rule matching. This feature is off by default. Scrollpatrol does not record audio, access your microphone, or capture whole-page screenshots. Connection tests send a generated sample post or image to the selected provider.
 
 Your API key authenticates requests directly to its respective provider over HTTPS. Keys are stored locally in Chrome, not Chrome Sync, and are restricted to trusted extension contexts. They are not sent to the maintainer. Provider usage is charged to your provider account. Provider processing, retention, and use depend on their applicable terms and account configuration; consult [TypeSafe](https://typesafe.ai) and [Google's Gemini API terms](https://ai.google.dev/gemini-api/terms) before enabling processing of feed content.
 
@@ -18,7 +18,7 @@ You can remove keys, clear muted history and frame descriptions, disable individ
 
 ## Sharing and use
 
-Scrollsafe has no maintainer-operated processing backend, analytics, advertising, or sale of user data. Data is processed only to provide the filtering and connection-check features described here. It is not used by the extension for advertising, creditworthiness, or unrelated profiling. Scrollsafe does not collect general browsing history, cookies, or private messages. Post links are retained locally for revealing the source of a mute. Network providers may receive standard connection information, such as your IP address.
+Scrollpatrol has no maintainer-operated processing backend, analytics, advertising, or sale of user data. Data is processed only to provide the filtering and connection-check features described here. It is not used by the extension for advertising, creditworthiness, or unrelated profiling. Scrollpatrol does not collect general browsing history, cookies, or private messages. Post links are retained locally for revealing the source of a mute. Network providers may receive standard connection information, such as your IP address.
 
 ## Contact and updates
 

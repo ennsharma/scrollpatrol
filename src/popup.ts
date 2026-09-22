@@ -71,14 +71,14 @@ async function testConnection(){
     }else{connectionStatus(result?.error||'No response from the extension. Reload it at chrome://extensions and try again.','error');}
   }catch(e){
     const detail=e instanceof Error?e.message:'';
-    connectionStatus(/timed out/.test(detail)?detail:'Could not save or check the key. Reload Scrollsafe at chrome://extensions and try again.','error');
+    connectionStatus(/timed out/.test(detail)?detail:'Could not save or check the key. Reload Scrollpatrol at chrome://extensions and try again.','error');
   }finally{
     if(timer)clearTimeout(timer);
     checking=false;button.disabled=false;remove.disabled=false;key.disabled=false;button.textContent='Save & test';
     $('connection-status').scrollIntoView({block:'nearest'});
   }
 }
-void init().catch(()=>{connectionStatus('Setup failed to load. Reload Scrollsafe at chrome://extensions and reopen this popup.','error');$<HTMLDetailsElement>('setup').open=true;});
+void init().catch(()=>{connectionStatus('Setup failed to load. Reload Scrollpatrol at chrome://extensions and reopen this popup.','error');$<HTMLDetailsElement>('setup').open=true;});
 
 async function checkFeed(){
   const button=$<HTMLButtonElement>('check-feed');button.disabled=true;

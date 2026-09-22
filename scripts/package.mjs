@@ -4,7 +4,7 @@ import {resolve} from 'node:path';
 execFileSync(process.execPath,['build.mjs'],{stdio:'inherit'});
 const manifest=JSON.parse(await readFile('dist/manifest.json','utf8'));
 await mkdir('release',{recursive:true});
-const output=resolve(`release/scrollsafe-${manifest.version}.zip`);
+const output=resolve(`release/scrollpatrol-${manifest.version}.zip`);
 await rm(output,{force:true});
 execFileSync('zip',['-q','-r',output,'.','-x','*.DS_Store'],{cwd:resolve('dist'),stdio:'inherit'});
 console.log(output);

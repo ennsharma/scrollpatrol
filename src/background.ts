@@ -30,7 +30,7 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
         const connection={ok:true,checkedAt:Date.now(),latencyMs:Date.now()-started};
         await chrome.storage.local.set({connection});await chrome.storage.local.remove('lastError');backoffUntil=0;reply(connection);
       }catch(e){const error=errorText(e);if((await chrome.storage.local.get('apiKey')).apiKey===apiKey)await chrome.storage.local.set({connection:{ok:false,checkedAt:Date.now(),error}});reply({ok:false,error});}
-    })().catch(()=>reply({ok:false,error:'Could not read or save extension settings. Reload Scrollsafe and try again.'}));return true;
+    })().catch(()=>reply({ok:false,error:'Could not read or save extension settings. Reload Scrollpatrol and try again.'}));return true;
   }
   if(msg?.type==='recordHidden'){
     const job=historyChain.then(async()=>{
@@ -55,7 +55,7 @@ chrome.runtime.onMessage.addListener((msg,sender,reply)=>{
     const config=normalize(settings);
     if(!config.deeper)delete post.visual;
     if(!config.enabled||!config.sites[site]||!config.rules.length) return {muted:false,skipped:!config.enabled?'Filtering is paused.':!config.sites[site]?'Filtering is disabled for this site.':'No mute rules configured.'};
-    if(typeof apiKey!=='string'||!apiKey) throw new Error('Add your Jev API key in Scrollsafe.');
+    if(typeof apiKey!=='string'||!apiKey) throw new Error('Add your Jev API key in Scrollpatrol.');
     const key=JSON.stringify([post,config.rules,config.threshold,config.deeper]);
     if(cache.has(key)) return cache.get(key);
     if(Date.now()<backoffUntil) throw new Error('API paused after an error. Try again shortly.');

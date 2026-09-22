@@ -79,7 +79,7 @@ try{
  await linkedin.locator('[componentkey="update-card-focusnew"]').waitFor({state:'visible'});
  await linkedin.close();
  await popup.locator('#enabled').uncheck();
- await popup.waitForTimeout(500);
+ await page.locator('.athing').waitFor({state:'visible'});
  assert.equal(await page.locator('.athing').isVisible(),true);
  await popup.getByRole('button',{name:'Clear history',exact:true}).click();
  await popup.getByText('No muted posts recorded yet.').waitFor();

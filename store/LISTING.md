@@ -4,7 +4,7 @@ Status: prepared locally; not uploaded or submitted for review.
 
 ## Listing fields
 
-Name: Scrollsafe — Semantic mute
+Name: Scrollpatrol — Semantic mute
 
 Summary: Mute posts and short videos by meaning using their text and creator details.
 
@@ -22,7 +22,7 @@ Privacy policy: https://github.com/ennsharma/scrollpatrol/blob/main/PRIVACY.md
 
 A little less internet.
 
-Scrollsafe lets you describe what you're tired of seeing, then collapses matching feed posts. Try “engagement bait asking me to comment for a link” or “startup fundraising announcements.” Reveal anything with Show post, pause filtering, or turn individual sites off.
+Scrollpatrol lets you describe what you're tired of seeing, then collapses matching feed posts. Try “engagement bait asking me to comment for a link” or “startup fundraising announcements.” Reveal anything with Show post, pause filtering, or turn individual sites off.
 
 • Filter by meaning, including available author and community details.
 • Supports LinkedIn feeds, Reddit, and Hacker News.
@@ -67,7 +67,7 @@ Do not select “does not collect or use user data.” Data sent directly to AI 
 
 ## Upload checklist
 
-- Upload release/scrollsafe-0.1.0.zip (manifest at ZIP root).
+- Upload release/scrollpatrol-0.1.0.zip (manifest at ZIP root).
 - Icon: public/icons/icon-128.png.
 - Screenshot: store/assets/screenshot-1280x800.png.
 - Small promotional image: store/assets/promo-440x280.png.

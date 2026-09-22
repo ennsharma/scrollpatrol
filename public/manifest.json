@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Scrollsafe \u2014 Semantic mute",
+  "name": "Scrollpatrol \u2014 Semantic mute",
   "version": "0.1.0",
   "description": "Mute posts and short videos by meaning using their text and creator details.",
   "permissions": [
@@ -19,7 +19,7 @@
       "16": "icons/icon-16.png",
       "32": "icons/icon-32.png"
     },
-    "default_title": "Scrollsafe"
+    "default_title": "Scrollpatrol"
   },
   "content_scripts": [
     {

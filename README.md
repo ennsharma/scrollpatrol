@@ -1,6 +1,6 @@
-# Scrollsafe
+# Scrollpatrol
 
-![Scrollsafe](public/brand/scrollsafe-wordmark.png)
+![Scrollpatrol](public/brand/scrollpatrol-wordmark.png)
 
 **A little less internet.** An open-source Chrome extension that mutes posts by meaning, with Jev.
 
@@ -10,14 +10,14 @@ Describe what you don't want to see: “engagement bait asking me to comment for
 
 1. Install Node.js 22+ and run `npm ci && npm run build`.
 2. Open `chrome://extensions`, enable **Developer mode**, select **Load unpacked**, and choose `dist/`.
-3. Open Scrollsafe from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules. **Save & test** makes a small Jev request and reports whether a valid response came back, with latency and the check time.
+3. Open Scrollpatrol from the extensions menu. Add your own [TypeSafe API key](https://console.typesafe.ai) and one or more mute rules. **Save & test** makes a small Jev request and reports whether a valid response came back, with latency and the check time.
 4. Open or reload a supported feed. The popup lets you pause filtering, disable individual sites, and adjust the match threshold.
 
 The source is free and MIT licensed. Jev is a hosted API, not an included local model; your API usage is billed by TypeSafe. This is an unpacked alpha, not a Chrome Web Store release.
 
 ## Preview
 
-![Scrollsafe popup](popup-preview.png)
+![Scrollpatrol popup](popup-preview.png)
 
 ## What the filter knows
 
@@ -48,11 +48,11 @@ Comments, private messages, continuous video/audio analysis and full linked arti
 
 ## Deeper video filtering
 
-Available subtitles are included automatically: loaded native caption/subtitle tracks, plus YouTube subtitles rendered inside the player. Scrollsafe does not enable captions, download hidden transcript tracks, or record/transcribe audio. Subtitles may be partial or unavailable, especially when burned into the video. Rendered captions accumulate per video, up to 4,000 characters, with rechecks at most once every five seconds.
+Available subtitles are included automatically: loaded native caption/subtitle tracks, plus YouTube subtitles rendered inside the player. Scrollpatrol does not enable captions, download hidden transcript tracks, or record/transcribe audio. Subtitles may be partial or unavailable, especially when burned into the video. Rendered captions accumulate per video, up to 4,000 characters, with rechecks at most once every five seconds.
 
 To enable visual evidence, open **Deeper video filtering**, add a [Google AI Studio key](https://aistudio.google.com/apikey), and click **Save & test image access**. The test sends a generated image and verifies the response format, not real-world model accuracy. Then enable **Analyze frames when needed**. This remains off by default and requires the existing Jev key and rules for feed filtering.
 
-Jev first checks metadata/subtitles and assesses whether visual evidence would help. If needed, Scrollsafe samples up to two frames, 900 ms apart during normal playback, without seeking or recording audio. Only visible, decoded videos are sampled. Images are resized to at most 384 pixels per side and sent to Gemini 2.5 Flash-Lite for a description and readable on-screen text. The description is passed to Jev for the final rule decision. Cross-origin/protected players can block capture: those stay on metadata filtering, with the reason shown in **Feed diagnostics**. There is no whole-page screenshot fallback.
+Jev first checks metadata/subtitles and assesses whether visual evidence would help. If needed, Scrollpatrol samples up to two frames, 900 ms apart during normal playback, without seeking or recording audio. Only visible, decoded videos are sampled. Images are resized to at most 384 pixels per side and sent to Gemini 2.5 Flash-Lite for a description and readable on-screen text. The description is passed to Jev for the final rule decision. Cross-origin/protected players can block capture: those stay on metadata filtering, with the reason shown in **Feed diagnostics**. There is no whole-page screenshot fallback.
 
 Descriptions are cached locally for seven days, up to 200 videos. Original frames are never persisted. Stable video links allow reuse across reloads; when a link is unavailable, cache identity uses the current media source and metadata, so reloading may require new analysis. Settings changes recheck cached evidence against the current rules.
 
@@ -86,10 +86,10 @@ API contract: [TypeSafe API reference](https://docs.typesafe.ai/api).
 
 ## Chrome Web Store preparation
 
-Run `npm run package` to build `release/scrollsafe-0.1.0.zip`, with the manifest at the ZIP root. Store listing copy, permission disclosures, reviewer instructions, and the upload checklist are in [store/LISTING.md](store/LISTING.md). The store release has not yet been submitted. Live provider accuracy still needs evaluation.
+Run `npm run package` to build `release/scrollpatrol-0.1.0.zip`, with the manifest at the ZIP root. Store listing copy, permission disclosures, reviewer instructions, and the upload checklist are in [store/LISTING.md](store/LISTING.md). The store release has not yet been submitted. Live provider accuracy still needs evaluation.
 
 [Privacy policy](PRIVACY.md) · [Report an issue](https://github.com/ennsharma/scrollpatrol/issues)
 
 ## Brand assets
 
-Approved wordmark and square icon originals live in `public/brand/`. Chrome uses 16, 32, 48, and 128 pixel PNG versions in `public/icons/`. The repository remains `ennsharma/scrollpatrol`; the extension display name is Scrollsafe.
+Approved wordmark and square icon originals live in `public/brand/`. Chrome uses 16, 32, 48, and 128 pixel PNG versions in `public/icons/`. The repository remains `ennsharma/scrollpatrol`; the extension display name is Scrollpatrol.

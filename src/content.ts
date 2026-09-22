@@ -100,7 +100,7 @@ async function scan(){
     try{result=await chrome.runtime.sendMessage({type:'classify',post});}
     catch{seen.delete(el);throw new Error('Feed script lost its extension connection. Refresh this page.');}
     if(current!==generation||currentPath!==location.pathname){seen.delete(el);schedule();break;}
-    if(!result){seen.delete(el);throw new Error('No response from extension. Reload Scrollsafe and refresh this page.');}
+    if(!result){seen.delete(el);throw new Error('No response from extension. Reload Scrollpatrol and refresh this page.');}
     lastError=result.error||'';
     if(!result.error&&!result.skipped)checked++;
     applyResult(el,post,result,identity,current);
@@ -123,7 +123,7 @@ chrome.runtime.onMessage.addListener((message,_sender,reply)=>{
 schedule();
 
 if(videoSite(site)){
-  const style=document.createElement('style');style.textContent='[data-scrollsafe-video-muted] > :not([data-scrollsafe-cover]){visibility:hidden!important}';document.head.append(style);
+  const style=document.createElement('style');style.textContent='[data-scrollpatrol-video-muted] > :not([data-scrollpatrol-cover]){visibility:hidden!important}';document.head.append(style);
   addEventListener('loadeddata',schedule,true);
   setInterval(()=>{if(document.visibilityState!=='hidden')schedule();},5000);
   let lastPath=location.pathname;setInterval(()=>{if(location.pathname!==lastPath){lastPath=location.pathname;generation++;for(const restore of [...hidden.values()])restore();seen=new WeakMap();revealed=new WeakMap();waitingVisual.clear();deepDone=new WeakMap();schedule();}},1000);
