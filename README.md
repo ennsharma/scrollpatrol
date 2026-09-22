@@ -1,6 +1,10 @@
 # Scrollpatrol
 
-![Scrollpatrol](public/brand/scrollpatrol-wordmark.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/brand/scrollpatrol-wordmark-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="public/brand/scrollpatrol-wordmark.png">
+  <img alt="Scrollpatrol" src="public/brand/scrollpatrol-wordmark.png" width="640">
+</picture>
 
 **A little less internet.** An open-source Chrome extension that mutes posts by meaning, with Jev.
 
