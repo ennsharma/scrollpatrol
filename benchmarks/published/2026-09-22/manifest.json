@@ -1,0 +1,24 @@
+{
+  "startedAt": "2026-09-22T17:13:13.405Z",
+  "mode": "live",
+  "commit": "eed8caeb3d946210415012691020b69daec21ab0",
+  "node": "v25.1.0",
+  "platform": "darwin",
+  "requestsPlanned": 93,
+  "threshold": 0.85,
+  "modelAlias": "jev-latest",
+  "datasetSha256": "9b9f2bd1c4f6b50e02b267ec9417924c9881420891952cbbff5d19f4d1c841e8",
+  "productionPromptSha256": "4761546e070cf34c7871709f8eef05ee34f0e2c6810aecb7f4a2134a04f3f9dc",
+  "runnerSha256": "76d97ea06b15337d4a57bf75e6ef8f1fa3706ef2fd9103f0cbcac1e67137b0e2",
+  "inputUsdPerMillion": 0.042,
+  "outputUsdPerMillion": 0,
+  "pricingSource": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+  "limitations": [
+    "Synthetic cases and labels authored by coding assistant, not independent human labels or a representative feed sample.",
+    "No DOM extraction or UI timing in this API experiment. No Gemini calls.",
+    "One network/location/time window; no local cache, sequential requests, HTTP connection reuse possible.",
+    "Text-only variant retains full-context target labels to measure loss from missing evidence.",
+    "Threshold sweep is exploratory on the same cases, not held-out validation.",
+    "Basic keyword baseline is illustrative, not an optimized competing classifier."
+  ]
+}

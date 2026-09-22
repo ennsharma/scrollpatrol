@@ -1,0 +1,96 @@
+{
+  "startedAt": "2026-09-22T17:13:50.285Z",
+  "kind": "Live Jev, synthetic HN DOM, real extension",
+  "observations": [
+    {
+      "experiment": "Three simultaneously inserted cards",
+      "timings": [
+        {
+          "id": "100",
+          "ms": 772.4000000059605
+        },
+        {
+          "id": "101",
+          "ms": 896.7000000029802
+        },
+        {
+          "id": "102",
+          "ms": 1054.7000000029802
+        }
+      ]
+    },
+    {
+      "experiment": "Two later DOM additions",
+      "timings": [
+        {
+          "id": "103",
+          "ms": 234.5
+        },
+        {
+          "id": "104",
+          "ms": 370.69999999552965
+        }
+      ]
+    },
+    {
+      "experiment": "Same posts after reload with warm worker cache",
+      "newApiCalls": 0,
+      "timings": [
+        {
+          "id": "100",
+          "ms": 343.69999999552965
+        },
+        {
+          "id": "101",
+          "ms": 344.3999999985099
+        },
+        {
+          "id": "102",
+          "ms": 345.29999999701977
+        },
+        {
+          "id": "103",
+          "ms": 346
+        },
+        {
+          "id": "104",
+          "ms": 346.79999999701977
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Five deliberately positive short synthetic posts; not representative feed accuracy.",
+    "Headless Chromium on this machine; UI timings include scheduling, messaging, serial queue and API.",
+    "Cache check only covers the same service-worker lifetime."
+  ],
+  "revealAutomationRoundTripMs": 171,
+  "requests": [
+    {
+      "start": 461.90000000596046,
+      "ms": 391.19999999552965,
+      "status": 200
+    },
+    {
+      "start": 877.9000000059605,
+      "ms": 119.19999999552965,
+      "status": 200
+    },
+    {
+      "start": 999.5,
+      "ms": 155.70000000298023,
+      "status": 200
+    },
+    {
+      "start": 1226.7000000029802,
+      "ms": 172.39999999850988,
+      "status": 200
+    },
+    {
+      "start": 1401.4000000059605,
+      "ms": 128.59999999403954,
+      "status": 200
+    }
+  ],
+  "success": true
+}

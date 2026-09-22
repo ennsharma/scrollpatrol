@@ -1,0 +1,389 @@
+{
+  "startedAt": "2026-09-22T17:13:13.405Z",
+  "mode": "live",
+  "commit": "eed8caeb3d946210415012691020b69daec21ab0",
+  "node": "v25.1.0",
+  "platform": "darwin",
+  "requestsPlanned": 93,
+  "threshold": 0.85,
+  "modelAlias": "jev-latest",
+  "datasetSha256": "9b9f2bd1c4f6b50e02b267ec9417924c9881420891952cbbff5d19f4d1c841e8",
+  "productionPromptSha256": "4761546e070cf34c7871709f8eef05ee34f0e2c6810aecb7f4a2134a04f3f9dc",
+  "runnerSha256": "76d97ea06b15337d4a57bf75e6ef8f1fa3706ef2fd9103f0cbcac1e67137b0e2",
+  "inputUsdPerMillion": 0.042,
+  "outputUsdPerMillion": 0,
+  "pricingSource": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+  "limitations": [
+    "Synthetic cases and labels authored by coding assistant, not independent human labels or a representative feed sample.",
+    "No DOM extraction or UI timing in this API experiment. No Gemini calls.",
+    "One network/location/time window; no local cache, sequential requests, HTTP connection reuse possible.",
+    "Text-only variant retains full-context target labels to measure loss from missing evidence.",
+    "Threshold sweep is exploratory on the same cases, not held-out validation.",
+    "Basic keyword baseline is illustrative, not an optimized competing classifier."
+  ],
+  "finishedAt": "2026-09-22T17:13:29.788Z",
+  "requestsAttempted": 93,
+  "errors": 0,
+  "models": [
+    "jev-1.13.0"
+  ],
+  "cost": {
+    "reportedInputTokens": 71353,
+    "reportedOutputTokens": 3058,
+    "requestsMissingUsage": 0,
+    "estimatedUsdKnownUsage": 0.002996826,
+    "note": "Estimate from published input-token price, not an invoice. Failed calls may incur unreported costs."
+  },
+  "latencySuccessfulApi": {
+    "n": 93,
+    "p50": 174.55000000000018,
+    "p95": 276.78200000000015,
+    "min": 90.66845899999862,
+    "max": 631.3602080000001
+  },
+  "latencyAllAttempts": {
+    "n": 93,
+    "p50": 174.55000000000018,
+    "p95": 276.78200000000015,
+    "min": 90.66845899999862,
+    "max": 631.3602080000001
+  },
+  "keywordBaseline": {
+    "n": 36,
+    "tp": 8,
+    "tn": 9,
+    "fp": 11,
+    "fn": 8,
+    "errors": 0,
+    "precision": 0.42105263157894735,
+    "recall": 0.5,
+    "falsePositiveRate": 0.55,
+    "accuracy": 0.4722222222222222
+  },
+  "full": {
+    "n": 36,
+    "tp": 16,
+    "tn": 20,
+    "fp": 0,
+    "fn": 0,
+    "errors": 0,
+    "precision": 1,
+    "recall": 1,
+    "falsePositiveRate": 0,
+    "accuracy": 1
+  },
+  "textOnly": {
+    "n": 36,
+    "tp": 7,
+    "tn": 20,
+    "fp": 0,
+    "fn": 9,
+    "errors": 0,
+    "precision": 1,
+    "recall": 0.4375,
+    "falsePositiveRate": 0,
+    "accuracy": 0.75
+  },
+  "thresholds": [
+    {
+      "threshold": 0.5,
+      "n": 36,
+      "tp": 16,
+      "tn": 18,
+      "fp": 2,
+      "fn": 0,
+      "errors": 0,
+      "precision": 0.8888888888888888,
+      "recall": 1,
+      "falsePositiveRate": 0.1,
+      "accuracy": 0.9444444444444444
+    },
+    {
+      "threshold": 0.7,
+      "n": 36,
+      "tp": 16,
+      "tn": 19,
+      "fp": 1,
+      "fn": 0,
+      "errors": 0,
+      "precision": 0.9411764705882353,
+      "recall": 1,
+      "falsePositiveRate": 0.05,
+      "accuracy": 0.9722222222222222
+    },
+    {
+      "threshold": 0.85,
+      "n": 36,
+      "tp": 16,
+      "tn": 20,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    {
+      "threshold": 0.95,
+      "n": 36,
+      "tp": 6,
+      "tn": 20,
+      "fp": 0,
+      "fn": 10,
+      "errors": 0,
+      "precision": 1,
+      "recall": 0.375,
+      "falsePositiveRate": 0,
+      "accuracy": 0.7222222222222222
+    },
+    {
+      "threshold": 0.99,
+      "n": 36,
+      "tp": 0,
+      "tn": 20,
+      "fp": 0,
+      "fn": 16,
+      "errors": 0,
+      "precision": null,
+      "recall": 0,
+      "falsePositiveRate": 0,
+      "accuracy": 0.5555555555555556
+    }
+  ],
+  "groups": {
+    "funding": {
+      "n": 6,
+      "tp": 3,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    "bait": {
+      "n": 6,
+      "tp": 3,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    "author": {
+      "n": 6,
+      "tp": 2,
+      "tn": 4,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    "community": {
+      "n": 6,
+      "tp": 2,
+      "tn": 4,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    "sponsored": {
+      "n": 6,
+      "tp": 3,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    },
+    "evidence": {
+      "n": 6,
+      "tp": 3,
+      "tn": 3,
+      "fp": 0,
+      "fn": 0,
+      "errors": 0,
+      "precision": 1,
+      "recall": 1,
+      "falsePositiveRate": 0,
+      "accuracy": 1
+    }
+  },
+  "scaling": [
+    {
+      "ruleCount": 1,
+      "attempts": 5,
+      "latency": {
+        "n": 5,
+        "p50": 189.13208300000042,
+        "p95": 203.8079170000001,
+        "min": 100.74691600000006,
+        "max": 203.8079170000001
+      },
+      "meanInputTokens": 572
+    },
+    {
+      "ruleCount": 5,
+      "attempts": 5,
+      "latency": {
+        "n": 5,
+        "p50": 188.3785829999997,
+        "p95": 204.70887500000026,
+        "min": 114.6895829999994,
+        "max": 204.70887500000026
+      },
+      "meanInputTokens": 1685
+    },
+    {
+      "ruleCount": 10,
+      "attempts": 5,
+      "latency": {
+        "n": 5,
+        "p50": 126.22624999999971,
+        "p95": 225.17504200000076,
+        "min": 116.90533299999879,
+        "max": 225.17504200000076
+      },
+      "meanInputTokens": 3073
+    }
+  ],
+  "mistakes": [],
+  "repeats": [
+    {
+      "id": "bait-4-repeat-0",
+      "sourceId": "bait-4",
+      "group": "bait",
+      "variant": "repeat",
+      "expected": false,
+      "ruleCount": 1,
+      "requestSha256": "a81c6387dc87379de970ab4d31fd248ecd692d15398945790af37fa0ad3c2814",
+      "requestBytes": 1431,
+      "status": 200,
+      "ms": 140.18491600000016,
+      "score": 0.14,
+      "scores": [
+        0.14
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 582,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000024444000000000002
+    },
+    {
+      "id": "bait-4-repeat-1",
+      "sourceId": "bait-4",
+      "group": "bait",
+      "variant": "repeat",
+      "expected": false,
+      "ruleCount": 1,
+      "requestSha256": "a81c6387dc87379de970ab4d31fd248ecd692d15398945790af37fa0ad3c2814",
+      "requestBytes": 1431,
+      "status": 200,
+      "ms": 191.83641700000044,
+      "score": 0.15,
+      "scores": [
+        0.15
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 582,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000024444000000000002
+    },
+    {
+      "id": "evidence-5-repeat-0",
+      "sourceId": "evidence-5",
+      "group": "evidence",
+      "variant": "repeat",
+      "expected": true,
+      "ruleCount": 1,
+      "requestSha256": "f74d53ae03492869895a95ea05769fe917fb0873f327d120acda198c7456b394",
+      "requestBytes": 1456,
+      "status": 200,
+      "ms": 146.10341599999992,
+      "score": 0.84,
+      "scores": [
+        0.84
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 597,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000025074
+    },
+    {
+      "id": "evidence-5-repeat-1",
+      "sourceId": "evidence-5",
+      "group": "evidence",
+      "variant": "repeat",
+      "expected": true,
+      "ruleCount": 1,
+      "requestSha256": "f74d53ae03492869895a95ea05769fe917fb0873f327d120acda198c7456b394",
+      "requestBytes": 1456,
+      "status": 200,
+      "ms": 178.5687080000007,
+      "score": 0.84,
+      "scores": [
+        0.84
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 597,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000025074
+    },
+    {
+      "id": "evidence-6-repeat-0",
+      "sourceId": "evidence-6",
+      "group": "evidence",
+      "variant": "repeat",
+      "expected": false,
+      "ruleCount": 1,
+      "requestSha256": "5e98266b05f48a7126a4a82836d8b8ad3c877826d164a341662582cd4d127429",
+      "requestBytes": 1449,
+      "status": 200,
+      "ms": 198.44279199999983,
+      "score": 0.02,
+      "scores": [
+        0.02
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 596,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000025032
+    },
+    {
+      "id": "evidence-6-repeat-1",
+      "sourceId": "evidence-6",
+      "group": "evidence",
+      "variant": "repeat",
+      "expected": false,
+      "ruleCount": 1,
+      "requestSha256": "5e98266b05f48a7126a4a82836d8b8ad3c877826d164a341662582cd4d127429",
+      "requestBytes": 1449,
+      "status": 200,
+      "ms": 107.99549999999908,
+      "score": 0.02,
+      "scores": [
+        0.02
+      ],
+      "model": "jev-1.13.0",
+      "inputTokens": 596,
+      "outputTokens": 21,
+      "estimatedUsd": 0.000025032
+    }
+  ]
+}
